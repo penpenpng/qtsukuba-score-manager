@@ -1,7 +1,7 @@
 const OFF = 0
 const WARN = 1
 const ERROR = 2
-let PRODUCTION_ERROR = process.env.NODE_ENV === "production" ? ERROR : OFF
+const PRODUCTION_ERROR = process.env.NODE_ENV === "production" ? ERROR : OFF
 
 module.exports = {
   root: true,
