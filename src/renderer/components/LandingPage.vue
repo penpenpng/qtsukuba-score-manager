@@ -30,16 +30,16 @@
 </template>
 
 <script>
-  import SystemInformation from './LandingPage/SystemInformation'
+  import SystemInformation from "./LandingPage/SystemInformation"
 
-  export default {
-    name: 'landing-page',
-    components: { SystemInformation },
+export default {
+    name: "landing-page",
+    components: { SystemInformation, },
     methods: {
-      open (link) {
+      open(link) {
         this.$electron.shell.openExternal(link)
-      }
-    }
+    },
+    },
   }
 </script>
 

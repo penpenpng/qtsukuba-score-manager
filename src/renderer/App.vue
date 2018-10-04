@@ -6,7 +6,7 @@
 
 <script>
   export default {
-    name: 'quizscore-manager'
+    name: "quizscore-manager",
   }
 </script>
 

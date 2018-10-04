@@ -1,26 +1,31 @@
+const OFF = 0
+const WARN = 1
+const ERROR = 2
+let PRODUCTION_ERROR = process.env.NODE_ENV === "production" ? ERROR : OFF
+
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
+  parser: "babel-eslint",
   parserOptions: {
-    sourceType: 'module'
+    sourceType: "module"
   },
   env: {
     browser: true,
     node: true
   },
-  extends: 'standard',
+  extends: "eslint:recommended",
   globals: {
     __static: true
   },
   plugins: [
-    'html'
+    "html"
   ],
-  'rules': {
-    // allow paren-less arrow functions
-    'arrow-parens': 0,
-    // allow async-await
-    'generator-star-spacing': 0,
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+  rules: {
+    "comma-dangle": [WARN, "always"],
+    "quotes": [WARN, "double", { "allowTemplateLiterals": true }],
+    "semi": [WARN, "never"],
+    "space-before-function-paren": [WARN, "never"],
+    "no-console": PRODUCTION_ERROR,
+    "no-debugger": PRODUCTION_ERROR,
   }
 }
