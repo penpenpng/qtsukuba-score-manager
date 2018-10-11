@@ -1,6 +1,9 @@
 "use strict"
 
-import { app, BrowserWindow } from "electron"
+import {
+  app,
+  BrowserWindow,
+} from "electron"
 
 /**
  * Set `__static` path to static files in production
@@ -14,6 +17,11 @@ let mainWindow
 const winURL = process.env.NODE_ENV === "development"
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
+
+
+function push(type, payload) {
+  mainWindow.webContents.send("updated-master", type, payload)
+}
 
 function createWindow() {
   /**
