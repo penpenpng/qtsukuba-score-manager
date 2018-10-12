@@ -17,77 +17,73 @@ if (process.env.NODE_ENV !== "development") {
 }
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = true
 
-let mainWindow, subWindow
 const winURL = process.env.NODE_ENV === "development"
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
 
+let windows = {}
+
+
 function main() {
+  app.on("window-all-closed", () => {
+    if (process.platform !== "darwin") app.quit()
+  })
+  
+  app.on("activate", () => {
+    if (!windows.control) createControlWindow()
+  })
+
   ipcMain.on("push", (e, type, payload) => {
-    mainWindow.webContents.send("postback", type, payload)
-    subWindow.webContents.send("postback", type, payload)
+    for (let w of Object.values(windows)) if (w)
+      w.webContents.send("postback", type, payload)
     store.commit(type, payload)
   })
   
   ipcMain.on("fetch", () => {
-    mainWindow.webContents.send("initialize", store.state)
-    subWindow.webContents.send("initialize", store.state)
+    for (let w of Object.values(windows)) if (w)
+      w.webContents.send("initialize", store.state)
   })
 
-  createMainWindow()
-  createSubWindow()
+  ipcMain.on("open-view-page", () => {
+    if (!windows.view) createViewWindow()
+  })
+
+  createControlWindow()
 }
 
 
-function createMainWindow() {
-  /**
-   * Initial window options
-   */
-  mainWindow = new BrowserWindow({
+function createControlWindow() {
+  windows.control = new BrowserWindow({
     height: 563,
     useContentSize: true,
     width: 1000,
   })
 
-  mainWindow.loadURL(winURL)
+  windows.control.loadURL(winURL)
 
-  mainWindow.on("closed", () => {
-    mainWindow = null
+  windows.control.on("closed", () => {
+    windows.control = null
   })
 }
 
 
-function createSubWindow() {
-  /**
-   * Initial window options
-   */
-  subWindow = new BrowserWindow({
+function createViewWindow() {
+  windows.view = new BrowserWindow({
     height: 563,
     useContentSize: true,
     width: 1000,
   })
 
-  subWindow.loadURL(winURL + "/#/test")
+  windows.view.loadURL(winURL + "/#/test")
 
-  subWindow.on("closed", () => {
-    subWindow = null
+  windows.view.on("closed", () => {
+    windows.view = null
   })
 }
 
 app.on("ready", main)
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit()
-  }
-})
-
-app.on("activate", () => {
-  if (mainWindow === null) {
-    createMainWindow()
-  }
-})
 
 /**
  * Auto Updater
