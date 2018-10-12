@@ -17,7 +17,7 @@ if (process.env.NODE_ENV !== "development") {
 }
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = true
 
-let mainWindow
+let mainWindow, subWindow
 const winURL = process.env.NODE_ENV === "development"
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
@@ -26,16 +26,21 @@ const winURL = process.env.NODE_ENV === "development"
 function main() {
   ipcMain.on("push", (e, type, payload) => {
     mainWindow.webContents.send("postback", type, payload)
+    subWindow.webContents.send("postback", type, payload)
     store.commit(type, payload)
   })
   
   ipcMain.on("fetch", () => {
     mainWindow.webContents.send("initialize", store.state)
+    subWindow.webContents.send("initialize", store.state)
   })
 
-  createWindow()
+  createMainWindow()
+  createSubWindow()
 }
-function createWindow() {
+
+
+function createMainWindow() {
   /**
    * Initial window options
    */
@@ -52,6 +57,24 @@ function createWindow() {
   })
 }
 
+
+function createSubWindow() {
+  /**
+   * Initial window options
+   */
+  subWindow = new BrowserWindow({
+    height: 563,
+    useContentSize: true,
+    width: 1000,
+  })
+
+  subWindow.loadURL(winURL + "/#/test")
+
+  subWindow.on("closed", () => {
+    subWindow = null
+  })
+}
+
 app.on("ready", main)
 
 app.on("window-all-closed", () => {
@@ -62,7 +85,7 @@ app.on("window-all-closed", () => {
 
 app.on("activate", () => {
   if (mainWindow === null) {
-    createWindow()
+    createMainWindow()
   }
 })
 
