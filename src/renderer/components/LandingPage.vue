@@ -45,7 +45,7 @@ export default {
 
     inc() {
       this.push("INCREMENT_MAIN_COUNTER")
-    }
+    },
   },
 }
 </script>

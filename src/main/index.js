@@ -3,7 +3,10 @@
 import {
   app,
   BrowserWindow,
+  ipcMain,
 } from "electron"
+
+import store from "../renderer/store"
 
 /**
  * Set `__static` path to static files in production
@@ -12,6 +15,7 @@ import {
 if (process.env.NODE_ENV !== "development") {
   global.__static = require("path").join(__dirname, "/static").replace(/\\/g, "\\\\")
 }
+process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = true
 
 let mainWindow
 const winURL = process.env.NODE_ENV === "development"
@@ -19,10 +23,18 @@ const winURL = process.env.NODE_ENV === "development"
   : `file://${__dirname}/index.html`
 
 
-function push(type, payload) {
-  mainWindow.webContents.send("updated-master", type, payload)
-}
+function main() {
+  ipcMain.on("push", (e, type, payload) => {
+    mainWindow.webContents.send("postback", type, payload)
+    store.commit(type, payload)
+  })
+  
+  ipcMain.on("fetch", () => {
+    mainWindow.webContents.send("initialize", store.state)
+  })
 
+  createWindow()
+}
 function createWindow() {
   /**
    * Initial window options
@@ -40,7 +52,7 @@ function createWindow() {
   })
 }
 
-app.on("ready", createWindow)
+app.on("ready", main)
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
