@@ -6,9 +6,6 @@
         <span class="title">
           Welcome to your new project!
         </span>
-        <span @click="inc">
-          remote state: {{ this.$store.state.Counter.main }}
-        </span>
         <system-information></system-information>
       </div>
 
@@ -35,19 +32,19 @@
 <script>
   import SystemInformation from "./LandingPage/SystemInformation"
 
-export default {
-  name: "landing-page",
-  components: { SystemInformation },
-  methods: {
-    open(link) {
-      this.$electron.shell.openExternal(link)
-    },
+  export default {
+    name: "landing-page",
+    components: { SystemInformation },
+    methods: {
+      open(link) {
+        this.$electron.shell.openExternal(link)
+      },
 
-    inc() {
-      this.push("INCREMENT_MAIN_COUNTER")
+      inc() {
+        this.push("INCREMENT_MAIN_COUNTER")
+      },
     },
-  },
-}
+  }
 </script>
 
 <style>
