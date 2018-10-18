@@ -6,8 +6,13 @@ import root from "./root"
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
+const isProduction = process.env.NODE_ENV === "production"
+let store = new Vuex.Store({
   ...root,
   modules,
-  strict: process.env.NODE_ENV !== "production",
+  strict: !isProduction,
 })
+
+if (!isProduction) global.store = store
+
+export default store
