@@ -1,5 +1,6 @@
 <template>
   <div class="player-control">
+    <span> {{ playerNo }} </span>
     <input type="radio" :value="playerId" v-model="slasher">
     <input type="checkbox" :value="playerId" v-model="correct">
     <input type="text" v-model="name">
@@ -20,7 +21,10 @@
 
 <script>
   export default {
-    props: ["playerId"],
+    props: [
+      "playerId",
+      "playerNo",
+    ],
     computed: {
       player() {
         return this.$store.getters.player(this.playerId)

@@ -4,9 +4,10 @@
       slasher: {{ slasher }}
     </span>
     <player-control
-      v-for="player in players"
+      v-for="(player, no) in players"
       :key="player.id"
-      :player-id="player.id"></player-control>
+      :player-id="player.id"
+      :player-no="no + 1"></player-control>
     <button @click="appendPlayer">append</button>
   </div>
 </template>
