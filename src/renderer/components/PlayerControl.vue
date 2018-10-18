@@ -3,6 +3,12 @@
     <input type="radio" :value="playerId" v-model="slasher">
     <input type="checkbox" :value="playerId" v-model="correct">
     <input type="text" v-model="name">
+    <input
+      v-for="(score, i) in player.score"
+      :key="scoreStruct[i].key"
+      type="number"
+      :value="score.value"
+      @input="updateScore($event, i)">
     <span>name: {{ player.name }}</span>
   </div>
 </template>
@@ -17,6 +23,9 @@
     computed: {
       player() {
         return this.$store.getters.player(this.playerId)
+      },
+      scoreStruct() {
+        return this.$store.state.scoreStruct
       },
       correct: {
         get() {
@@ -46,5 +55,14 @@
         },
       },
     },
+    methods: {
+      updateScore(e, i) {
+        this.push("updateScore", {
+          playerId: this.playerId,
+          scoreId: i,
+          value: e.target.value,
+        })
+      }
+    }
   }
 </script>

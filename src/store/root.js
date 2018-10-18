@@ -55,8 +55,12 @@ const mutations = {
     state.players.push(PlayerState())
   },
   updatePlayerName(state, args) {
-    let {id, name} = args
+    let { id, name } = args
     getters.player(state)(id).name = name
+  },
+  updateScore(state, args) {
+    let { scoreId, playerId, value } = args
+    getters.player(state)(playerId).score[scoreId].value = value
   }
 }
 
