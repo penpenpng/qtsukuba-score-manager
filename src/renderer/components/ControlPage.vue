@@ -23,7 +23,7 @@
     }),
     methods: {
       appendPlayer() {
-        this.$store.commit("appendPlayer")
+        this.push("appendPlayer")
       }
     }
   }

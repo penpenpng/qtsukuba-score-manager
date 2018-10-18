@@ -23,7 +23,7 @@
           return this.$store.state.correct
         },
         set(value) {
-          this.$store.commit("updateCorrect", value)
+          this.push("updateCorrect", value)
         },
       },
       slasher: {
@@ -31,7 +31,7 @@
           return this.$store.state.slasher
         },
         set(value) {
-          this.$store.commit("updateSlasher", value)
+          this.push("updateSlasher", value)
         },
       },
       name: {
@@ -39,7 +39,7 @@
           return this.player.name
         },
         set(value) {
-          this.$store.commit("updatePlayerName", {
+          this.push("updatePlayerName", {
             id: this.playerId,
             name: value,
           })
