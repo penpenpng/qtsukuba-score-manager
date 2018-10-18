@@ -51,6 +51,9 @@ const mutations = {
   updateCorrect(state, correct) {
     state.correct = correct
   },
+  appendPlayer(state) {
+    state.players.push(PlayerState())
+  },
   updatePlayerName(state, args) {
     let {id, name} = args
     getters.player(state)(id).name = name

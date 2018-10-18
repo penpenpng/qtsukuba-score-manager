@@ -7,6 +7,7 @@
       v-for="player in players"
       :key="player.id"
       :player-id="player.id"></player-control>
+    <button @click="appendPlayer">append</button>
   </div>
 </template>
 
@@ -20,5 +21,10 @@
       slasher: state => state.slasher,
       players: state => state.players,
     }),
+    methods: {
+      appendPlayer() {
+        this.$store.commit("appendPlayer")
+      }
+    }
   }
 </script>
