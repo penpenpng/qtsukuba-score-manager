@@ -54,6 +54,11 @@ const mutations = {
   appendPlayer(state) {
     state.players.push(PlayerState())
   },
+  deletePlayer(state, id) {
+    let index = state.players.findIndex(p => p.id === id)
+    if (index < 0) throw new Error(`player <${id}> is not found`)
+    state.players.splice(index, 1)
+  },
   updatePlayerName(state, args) {
     let { id, name } = args
     getters.player(state)(id).name = name

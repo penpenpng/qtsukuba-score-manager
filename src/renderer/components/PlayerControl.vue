@@ -10,6 +10,7 @@
       :value="score.value"
       @input="updateScore($event, i)">
     <span>name: {{ player.name }}</span>
+    <button @click="deletePlayer">delete</button>
   </div>
 </template>
 
@@ -62,6 +63,9 @@
           scoreId: i,
           value: e.target.value,
         })
+      },
+      deletePlayer() {
+        this.push("deletePlayer", this.playerId)
       }
     }
   }
