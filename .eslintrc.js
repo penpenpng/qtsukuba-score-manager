@@ -21,7 +21,7 @@ module.exports = {
     "html"
   ],
   rules: {
-    "comma-dangle": [WARN, "always-multiline"],
+    "comma-dangle": [WARN, "only-multiline"],
     "quotes": [WARN, "double", { "allowTemplateLiterals": true }],
     "semi": [WARN, "never"],
     "space-before-function-paren": [WARN, "never"],
