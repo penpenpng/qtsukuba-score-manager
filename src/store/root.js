@@ -9,20 +9,12 @@ function PlayerState() {
     isPlaying: true,
     score: [
       {
-        key: "correct",
-        label: "",
-        view: "normal",
         value: 0,
-        visible: true,
-        color: "",
+        reach: false,
       },
       {
-        key: "wrong",
-        label: "",
-        view: "normal",
         value: 0,
-        visible: true,
-        color: "",
+        reach: false,
       },
     ],
   }
@@ -31,7 +23,24 @@ function PlayerState() {
 const state = {
   title: "No Title",
   rule: "cyana-tennis",
+  scoreStruct: [
+    {
+      key: "correct",
+      label: "",
+      visible: true,
+      view: "normal",
+      color: "",
+    },
+    {
+      key: "wrong",
+      label: "",
+      visible: true,
+      view: "normal",
+      color: "",
+    },
+  ],
   slasher: "null",
+  correct: [],
   players: [PlayerState(), PlayerState()],
 }
 
@@ -39,6 +48,13 @@ const mutations = {
   updateSlasher(state, slasher) {
     state.slasher = +slasher
   },
+  updateCorrect(state, correct) {
+    state.correct = correct
+  },
+  updatePlayerName(state, args) {
+    let {id, name} = args
+    getters.player(state)(id).name = name
+  }
 }
 
 const getters = {
