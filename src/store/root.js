@@ -1,3 +1,5 @@
+import { getScoreStruct, resolveSlash } from "./ruleLogic"
+
 
 let id = 0
 function PlayerState() {
@@ -7,52 +9,59 @@ function PlayerState() {
     lock: 0,
     rank: null,
     isPlaying: true,
-    score: [
-      {
-        value: 0,
-        reach: false,
-      },
-      {
-        value: 0,
-        reach: false,
-      },
-    ],
+    score: [],
+  }
+}
+
+function replaceScoreState(ruleKey, score) {
+  let struct = getScoreStruct(ruleKey)
+
+  score.splice(0, score.length)
+  for (let i = 0; i < struct.length; i++) {
+    score.push({
+      value: 0,
+      reach: 0,
+    })
   }
 }
 
 const state = {
   title: "No Title",
-  rule: "cyana-tennis",
-  scoreStruct: [
+  ruleOptions: [
     {
-      key: "correct",
+      key: "",
       label: "",
-      visible: true,
-      view: "normal",
-      color: "",
     },
     {
-      key: "wrong",
-      label: "",
-      visible: true,
-      view: "normal",
-      color: "",
-    },
+      key: "CyanaTennis",
+      label: "きゃな式テニス",
+    }
   ],
+  ruleKey: "",
+  scoreStruct: [],
   slasher: "null",
   correct: [],
-  players: [PlayerState(), PlayerState()],
+  players: [],
 }
 
 const mutations = {
-  updateSlasher(state, slasher) {
-    state.slasher = +slasher
+  // Logic Setup
+  setRule(state, ruleKey) {
+    let struct = getScoreStruct(ruleKey)
+
+    state.ruleKey = ruleKey
+    state.correct.splice(0, state.correct.length)
+    state.slasher = "null"
+    state.scoreStruct = struct
+
+    for (let player of state.players) replaceScoreState(ruleKey, player.score)
   },
-  updateCorrect(state, correct) {
-    state.correct = correct
-  },
+
+  // Player Management
   appendPlayer(state) {
-    state.players.push(PlayerState())
+    let playerState = PlayerState()
+    replaceScoreState(state.ruleKey, playerState.score)
+    state.players.push(playerState)
   },
   deletePlayer(state, id) {
     let index = state.players.findIndex(p => p.id === id)
@@ -66,6 +75,17 @@ const mutations = {
   updateScore(state, args) {
     let { scoreId, playerId, value } = args
     getters.player(state)(playerId).score[scoreId].value = value
+  },
+
+  // Judgement Operations
+  updateSlasher(state, slasher) {
+    state.slasher = +slasher
+  },
+  updateCorrect(state, correct) {
+    state.correct = correct
+  },
+  resolveSlash(state) {
+    resolveSlash(this.ruleKey, state)
   }
 }
 

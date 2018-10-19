@@ -1,5 +1,11 @@
 <template>
   <div>
+    <select v-model="ruleKey">
+      <option
+        v-for="option in ruleOptions" 
+        :key="option.key"
+        :value="option.key">{{ option.label }}</option>
+    </select>
     <span>
       slasher: {{ slasher }}
     </span>
@@ -18,10 +24,21 @@
 
   export default {
     components: { PlayerControl },
-    computed: mapState({
-      slasher: state => state.slasher,
-      players: state => state.players,
-    }),
+    computed: {
+      ruleKey: {
+        get() {
+          return this.$store.state.ruleKey
+        },
+        set(value) {
+          this.push("setRule", value)
+        }
+      },
+      ...mapState({
+        ruleOptions: state => state.ruleOptions,
+        slasher: state => state.slasher,
+        players: state => state.players,
+      })
+    },
     methods: {
       appendPlayer() {
         this.push("appendPlayer")

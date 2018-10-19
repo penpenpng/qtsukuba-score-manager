@@ -12,6 +12,7 @@
       @input="updateScore($event, i)">
     <span>name: {{ player.name }}</span>
     <button @click="deletePlayer">delete</button>
+    <button @click="resolveSlash">resolve</button>
   </div>
 </template>
 
@@ -70,6 +71,9 @@
       },
       deletePlayer() {
         this.push("deletePlayer", this.playerId)
+      },
+      resolveSlash() {
+        this.push("resolveSlash")
       }
     }
   }
