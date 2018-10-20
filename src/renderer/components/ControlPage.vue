@@ -15,6 +15,7 @@
       :player-id="player.id"
       :player-no="no + 1"></player-control>
     <button @click="appendPlayer">append</button>
+    <button @click="resolveSlash">resolve</button>
   </div>
 </template>
 
@@ -42,6 +43,9 @@
     methods: {
       appendPlayer() {
         this.push("appendPlayer")
+      },
+      resolveSlash() {
+        this.push("resolveSlash")
       }
     }
   }

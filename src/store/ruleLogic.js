@@ -1,75 +1,93 @@
 
-// state は playerState の列 と globalenv
-// let playerState = {
-//   id: 0,
-//   name: 0,
-//   slash: false,
-//   correct: false,
-//   rank: 0,
-//   lock: 0,
-
-//   score: {
-//     key1: {
-//       value: 0,
-//       reach: false,
-//     }
-//   }
-// }
-
-// let globalenv = {
-//   quizNo: 0,
-//   time: 0,
-// }
-
-function State(vuexState) {
-  vuexState
-  //let state = {}
-  //return state
+export function getScoreDefinitions(ruleKey) {
+  if (ruleKey === "") { 
+    return {
+      order: [],
+      properties: {}
+    }
+  }
+  if (!RuleHash[ruleKey]) throw new Error(`Rule <${ruleKey}> is not found`)
+  return RuleHash[ruleKey].scoreDefinitions
 }
 
-export function resolveSlash(ruleKey, state) {
+export function createInitialScore(ruleKey) {
+  let definiton
+  try {
+    definiton = getScoreDefinitions(ruleKey)
+  } catch (e) {
+    throw e
+  }
+
+  let score = {}
+  for (let scoreKey of definiton.order) {
+    score[scoreKey] = {
+      value: definiton.properties[scoreKey].initialValue,
+      reach: false,
+    }
+  }
+  return score
+}
+
+export function resolveSlash(ruleKey, vuexState) {
   if (ruleKey === "") return
   if (!RuleHash[ruleKey]) throw new Error(`Rule <${ruleKey}> is not found`)
-  RuleHash[ruleKey].resolveSlash(State(state))
+  RuleHash[ruleKey].resolveSlash(State(vuexState))
 }
 
-export function getScoreStruct(ruleKey) {
-  if (ruleKey === "") return []
+export function updateRank(ruleKey, vuexState) {
+  if (ruleKey === "") return
   if (!RuleHash[ruleKey]) throw new Error(`Rule <${ruleKey}> is not found`)
-  return RuleHash[ruleKey].scoreStruct
+  RuleHash[ruleKey].updateRank(State(vuexState))
+}
+
+function State(vuexState) {
+  let state = {
+    players: [],
+    env: {},
+  }
+
+  for (let playerState of vuexState.players) {
+    state.players.push({
+      id: playerState.id,
+      lock: playerState.lock,
+      rank: playerState.rank,
+      score: JSON.parse(JSON.stringify(playerState.score)),
+      correct: vuexState.correctlyAnswererIds.findIndex((i) => i === playerState.id) >= 0,
+      slash: vuexState.slasherId === playerState.id
+    })
+  }
+
+  return state
 }
 
 const CyanaTennis = {
-  scoreStruct: [
-    {
-      key: "correct",
-      label: "",
-      visible: true,
-      view: "normal",
-      color: "",
-    },
-    {
-      key: "wrong",
-      label: "",
-      visible: true,
-      view: "normal",
-      color: "",
-    },
-  ],
-  exArgs: [],
+  scoreDefinitions: {
+    order: ["correct", "wrong"],
+    properties: {
+      correct: {
+        initialValue: 0,
+        visible: true,
+        view: "normal",
+        color: "",
+      },
+      wrong: {
+        initialValue: 0,
+        visible: true,
+        view: "normal",
+        color: "",
+      }
+    }
+  },
 
   updateRank(state) {
     state
   },
 
-  resolve(state) {
+  resolveSlash(state) {
     state
     // update score
     // resolve lock
   },
-
-  allowMultiCorrect() {
-  }
 }
 
 const RuleHash = {

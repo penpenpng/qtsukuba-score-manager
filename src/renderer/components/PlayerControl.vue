@@ -1,18 +1,17 @@
 <template>
   <div class="player-control">
     <span> {{ playerNo }} </span>
-    <input type="radio" :value="playerId" v-model="slasher">
-    <input type="checkbox" :value="playerId" v-model="correct">
+    <input type="radio" :value="playerId" v-model="slasherId">
+    <input type="checkbox" :value="playerId" v-model="correctlyAnswererIds">
     <input type="text" v-model="name">
     <input
-      v-for="(score, i) in player.score"
-      :key="scoreStruct[i].key"
+      v-for="scoreKey in Object.keys(player.score)"
+      :key="scoreKey"
       type="number"
-      :value="score.value"
-      @input="updateScore($event, i)">
+      :value="player.score[scoreKey].value"
+      @input="updateScore($event, scoreKey)">
     <span>name: {{ player.name }}</span>
     <button @click="deletePlayer">delete</button>
-    <button @click="resolveSlash">resolve</button>
   </div>
 </template>
 
@@ -30,23 +29,23 @@
       player() {
         return this.$store.getters.player(this.playerId)
       },
-      scoreStruct() {
-        return this.$store.state.scoreStruct
+      scoreDefinitons() {
+        return this.$store.state.scoreDefinitons
       },
-      correct: {
+      correctlyAnswererIds: {
         get() {
-          return this.$store.state.correct
+          return this.$store.state.correctlyAnswererIds
         },
         set(value) {
-          this.push("updateCorrect", value)
+          this.push("updateCorrectlyAnswererIds", value)
         },
       },
-      slasher: {
+      slasherId: {
         get() {
-          return this.$store.state.slasher
+          return this.$store.state.slasherId
         },
         set(value) {
-          this.push("updateSlasher", value)
+          this.push("updateSlasherId", value)
         },
       },
       name: {
@@ -62,19 +61,16 @@
       },
     },
     methods: {
-      updateScore(e, i) {
+      updateScore(e, key) {
         this.push("updateScore", {
           playerId: this.playerId,
-          scoreId: i,
+          scoreKey: key,
           value: e.target.value,
         })
       },
       deletePlayer() {
         this.push("deletePlayer", this.playerId)
       },
-      resolveSlash() {
-        this.push("resolveSlash")
-      }
     }
   }
 </script>

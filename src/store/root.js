@@ -1,4 +1,9 @@
-import { getScoreStruct, resolveSlash } from "./ruleLogic"
+import {
+  getScoreDefinitions,
+  createInitialScore,
+  resolveSlash,
+  updateRank,
+} from "./ruleLogic"
 
 
 let id = 0
@@ -8,20 +13,7 @@ function PlayerState() {
     name: "noname",
     lock: 0,
     rank: null,
-    isPlaying: true,
-    score: [],
-  }
-}
-
-function replaceScoreState(ruleKey, score) {
-  let struct = getScoreStruct(ruleKey)
-
-  score.splice(0, score.length)
-  for (let i = 0; i < struct.length; i++) {
-    score.push({
-      value: 0,
-      reach: 0,
-    })
+    score: {},
   }
 }
 
@@ -38,55 +30,58 @@ const state = {
     }
   ],
   ruleKey: "",
-  scoreStruct: [],
-  slasher: "null",
-  correct: [],
+  scoreDefinitions: [],
+  slasherId: NaN,
+  correctlyAnswererIds: [],
   players: [],
 }
 
 const mutations = {
   // Logic Setup
   setRule(state, ruleKey) {
-    let struct = getScoreStruct(ruleKey)
-
     state.ruleKey = ruleKey
-    state.correct.splice(0, state.correct.length)
+    state.correctlyAnswererIds.splice(0, state.correctlyAnswererIds.length)
     state.slasher = "null"
-    state.scoreStruct = struct
+    state.scoreDefinitions = getScoreDefinitions(ruleKey)
 
-    for (let player of state.players) replaceScoreState(ruleKey, player.score)
+    for (let playerState of state.players) playerState.score = createInitialScore(ruleKey)
+    updateRank(state.ruleKey, state)
   },
 
   // Player Management
   appendPlayer(state) {
     let playerState = PlayerState()
-    replaceScoreState(state.ruleKey, playerState.score)
+    playerState.score = createInitialScore(state.ruleKey)
     state.players.push(playerState)
+    updateRank(state.ruleKey, state)
   },
   deletePlayer(state, id) {
     let index = state.players.findIndex(p => p.id === id)
     if (index < 0) throw new Error(`player <${id}> is not found`)
     state.players.splice(index, 1)
+    updateRank(state.ruleKey, state)
   },
   updatePlayerName(state, args) {
     let { id, name } = args
     getters.player(state)(id).name = name
   },
   updateScore(state, args) {
-    let { scoreId, playerId, value } = args
-    getters.player(state)(playerId).score[scoreId].value = value
+    let { scoreKey, playerId, value } = args
+    getters.player(state)(playerId).score[scoreKey].value = value
+    updateRank(state.ruleKey, state)
   },
 
   // Judgement Operations
-  updateSlasher(state, slasher) {
-    state.slasher = +slasher
+  updateSlasherId(state, slasherId) {
+    state.slasherId = +slasherId
   },
-  updateCorrect(state, correct) {
-    state.correct = correct
+  updateCorrectlyAnswererIds(state, correctlyAnswererIds) {
+    state.correctlyAnswererIds = correctlyAnswererIds.map((i) => +i)
   },
   resolveSlash(state) {
-    resolveSlash(this.ruleKey, state)
-  }
+    resolveSlash(state.ruleKey, state)
+    updateRank(state.ruleKey, state)
+  },
 }
 
 const getters = {
