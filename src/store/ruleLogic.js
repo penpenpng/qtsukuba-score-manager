@@ -46,7 +46,7 @@ function State(vuexState) {
     env: {},
   }
 
-  for (let playerState of vuexState.players) {
+  for (let playerState of Object.values(vuexState.players)) {
     state.players.push({
       id: playerState.id,
       lock: playerState.lock,

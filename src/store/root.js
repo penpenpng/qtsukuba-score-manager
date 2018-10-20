@@ -4,18 +4,7 @@ import {
   resolveSlash,
   updateRank,
 } from "./ruleLogic"
-
-
-let id = 0
-function PlayerState() {
-  return {
-    id: ++id,
-    name: "noname",
-    lock: 0,
-    rank: null,
-    score: {},
-  }
-}
+import Vue from "vue"
 
 const state = {
   title: "No Title",
@@ -31,9 +20,11 @@ const state = {
   ],
   ruleKey: "",
   scoreDefinitions: [],
-  slasherId: NaN,
+  slasherId: null,
   correctlyAnswererIds: [],
-  players: [],
+  nextPlayerId: 1,
+  playerOrder: [],
+  players: {},
 }
 
 const mutations = {
@@ -41,33 +32,40 @@ const mutations = {
   setRule(state, ruleKey) {
     state.ruleKey = ruleKey
     state.correctlyAnswererIds.splice(0, state.correctlyAnswererIds.length)
-    state.slasher = "null"
+    state.slasherId = null
     state.scoreDefinitions = getScoreDefinitions(ruleKey)
 
-    for (let playerState of state.players) playerState.score = createInitialScore(ruleKey)
+    for (let playerState of Object.values(state.players)) playerState.score = createInitialScore(ruleKey)
     updateRank(state.ruleKey, state)
   },
 
   // Player Management
   appendPlayer(state) {
-    let playerState = PlayerState()
-    playerState.score = createInitialScore(state.ruleKey)
-    state.players.push(playerState)
+    Vue.set(state.players, state.nextPlayerId, {
+      id: state.nextPlayerId,
+      name: "noname",
+      lock: 0,
+      rank: null,
+      score: createInitialScore(state.ruleKey),
+    })
+    state.playerOrder.push(state.nextPlayerId)
+    state.nextPlayerId++
     updateRank(state.ruleKey, state)
   },
   deletePlayer(state, id) {
-    let index = state.players.findIndex(p => p.id === id)
+    let index = state.playerOrder.findIndex(i => i === id)
     if (index < 0) throw new Error(`player <${id}> is not found`)
-    state.players.splice(index, 1)
+    state.playerOrder.splice(index, 1)
+    Vue.delete(state.players, id)
     updateRank(state.ruleKey, state)
   },
   updatePlayerName(state, args) {
     let { id, name } = args
-    getters.player(state)(id).name = name
+    state.players[id].name = name
   },
   updateScore(state, args) {
     let { scoreKey, playerId, value } = args
-    getters.player(state)(playerId).score[scoreKey].value = value
+    state.players[playerId].score[scoreKey].value = value
     updateRank(state.ruleKey, state)
   },
 
@@ -84,16 +82,7 @@ const mutations = {
   },
 }
 
-const getters = {
-  player: (state) => (id) => {
-    let result = state.players.find(p => p.id === +id)
-    if (result === undefined) throw new Error(`player <${id}> is not found`)
-    else return result
-  },
-}
-
 export default {
   state,
-  getters,
   mutations,
 }

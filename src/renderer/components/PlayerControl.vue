@@ -10,8 +10,15 @@
       type="number"
       :value="player.score[scoreKey].value"
       @input="updateScore($event, scoreKey)">
-    <span>name: {{ player.name }}</span>
     <button @click="deletePlayer">delete</button>
+    <div>
+      <ul>
+        <li>name: {{ name }}</li>
+        <li
+          v-for="scoreKey in Object.keys(player.score)"
+          :key="scoreKey">{{ scoreKey }}: {{ player.score[scoreKey].value }}</li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -27,7 +34,7 @@
     ],
     computed: {
       player() {
-        return this.$store.getters.player(this.playerId)
+        return this.$store.state.players[this.playerId]
       },
       scoreDefinitons() {
         return this.$store.state.scoreDefinitons

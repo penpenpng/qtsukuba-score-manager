@@ -7,12 +7,12 @@
         :value="option.key">{{ option.label }}</option>
     </select>
     <span>
-      slasher: {{ slasher }}
+      slasherId: {{ slasherId }}
     </span>
     <player-control
-      v-for="(player, no) in players"
-      :key="player.id"
-      :player-id="player.id"
+      v-for="(playerId, no) in playerOrder"
+      :key="playerId"
+      :player-id="playerId"
       :player-no="no + 1"></player-control>
     <button @click="appendPlayer">append</button>
     <button @click="resolveSlash">resolve</button>
@@ -36,8 +36,8 @@
       },
       ...mapState({
         ruleOptions: state => state.ruleOptions,
-        slasher: state => state.slasher,
-        players: state => state.players,
+        slasherId: state => state.slasherId,
+        playerOrder: state => state.playerOrder,
       })
     },
     methods: {
