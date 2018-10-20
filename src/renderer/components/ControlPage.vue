@@ -17,15 +17,20 @@
       :player-no="no + 1"></player-control>
     <button @click="appendPlayer">append</button>
     <button @click="resolveSlash">resolve</button>
+    <QuizControl></QuizControl>
   </div>
 </template>
 
 <script>
   import { mapState } from "vuex"
   import PlayerControl from "./PlayerControl.vue"
+  import QuizControl from "./QuizControl.vue"
 
   export default {
-    components: { PlayerControl },
+    components: {
+      PlayerControl,
+      QuizControl,
+    },
     computed: {
       ruleKey: {
         get() {
