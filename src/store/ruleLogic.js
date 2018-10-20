@@ -29,6 +29,20 @@ export function createInitialScore(ruleKey) {
   return score
 }
 
+export function removeWinner(playerId, vueState) {
+  for (let chunk of vueState.ranking) {
+    let index = chunk.findIndex((i) => i === playerId)
+    if (index < 0) continue
+    chunk.splice(index, 1)
+  }
+
+  while (true) {
+    let index = vueState.ranking.findIndex((c) => c.length <= 0)
+    if (index < 0) break
+    vueState.ranking.splice(index, 1)
+  }
+}
+
 export function resolveSlash(ruleKey, vuexState) {
   if (ruleKey === "")
     return
@@ -68,19 +82,39 @@ export function updateRank(ruleKey, vuexState) {
     return
   if (!RuleHash[ruleKey])
     throw new Error(`Rule <${ruleKey}> is not found`)
+  
+  function win(playerId) {
+    for (let chunk of vuexState.ranking)
+      if (chunk.findIndex((i) => i === playerId) >= 0)
+        return true
+    return false
+  }
 
-  let stateRepr = convertToLogicArg(vuexState)
-  RuleHash[ruleKey].updateRank(stateRepr)
-  validate(stateRepr)
+  let newWinners = []
+  for (let playerId of Object.keys(vuexState.players)) {
+    let decision = RuleHash[ruleKey].makeDecision(
+      convertToLogicArg(vuexState).players[playerId].score,
+      convertToLogicArg(vuexState)
+    )
+    if (decision !== "win" && decision !== "lose" && decision !== "none")
+      throw new Error("Invalid decision")
 
-  // update rank of vuexState
-  for (let pk of Object.keys(vuexState.players)) {
-    if (!(pk in stateRepr.players))
-      continue
+    if (!win(playerId) && decision === "win")
+      newWinners.push(playerId)
+    else if (win(playerId) && decision !== "win")
+      removeWinner(playerId, vuexState)
+    
+    vuexState.players[playerId].lose = decision === "lose"
+    vuexState.players[playerId].rank = null
+  }
+  if (newWinners.length > 0)
+    vuexState.ranking.push(newWinners)
 
-    let p = stateRepr.players[pk]
-    if (p.rank === null || Number.isInteger(p.rank))
-      vuexState.players[pk].rank = p.rank
+  let rank = 1
+  for (let chunk of vuexState.ranking) {
+    for (let playerId of chunk)
+      vuexState.players[playerId].rank = rank
+    rank++
   }
 }
 
@@ -102,10 +136,10 @@ function convertToLogicArg(vuexState) {
     let slash = vuexState.slasherId === playerState.id
     playerRepr[playerState.id] = {
       lock: playerState.lock,
-      rank: playerState.rank,
       score: score,
       // readonly
       get id() { return playerState.id },
+      get rank() { return playerState.rank },
       get correct() { return correct },
       get slash() { return slash }
       // ---
@@ -150,8 +184,9 @@ const CyanaTennis = {
     }
   },
 
-  updateRank(state) {
-    state
+  makeDecision(score) {
+    if (score.point.value > 4) return "win"
+    return "none"
   },
 
   resolveSlash(state) {

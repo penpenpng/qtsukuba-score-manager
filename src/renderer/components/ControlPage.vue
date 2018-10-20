@@ -6,9 +6,10 @@
         :key="option.key"
         :value="option.key">{{ option.label }}</option>
     </select>
-    <span>
-      slasherId: {{ slasherId }}
-    </span>
+    <ul>
+      <li> slasherId: {{ slasherId }} </li>
+      <li> ranking: {{ ranking }} </li>
+    </ul>
     <player-control
       v-for="(playerId, no) in playerOrder"
       :key="playerId"
@@ -37,6 +38,7 @@
       ...mapState({
         ruleOptions: state => state.ruleOptions,
         slasherId: state => state.slasherId,
+        ranking: state => state.ranking,
         playerOrder: state => state.playerOrder,
       })
     },

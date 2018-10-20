@@ -1,6 +1,7 @@
 import {
   getScoreDefinitions,
   createInitialScore,
+  removeWinner,
   resolveSlash,
   updateRank,
 } from "./ruleLogic"
@@ -22,9 +23,10 @@ const state = {
   scoreDefinitions: [],
   slasherId: null,
   correctlyAnswererIds: [],
-  nextPlayerId: 1,
+  nextPlayerId: "1",
   playerOrder: [],
   players: {},
+  ranking: [],
 }
 
 const mutations = {
@@ -34,6 +36,7 @@ const mutations = {
     state.correctlyAnswererIds.splice(0, state.correctlyAnswererIds.length)
     state.slasherId = null
     state.scoreDefinitions = getScoreDefinitions(ruleKey)
+    state.ranking.splice(0, state.ranking.length)
 
     for (let playerState of Object.values(state.players))
       playerState.score = createInitialScore(ruleKey)
@@ -47,10 +50,11 @@ const mutations = {
       name: "noname",
       lock: 0,
       rank: null,
+      lose: false,
       score: createInitialScore(state.ruleKey),
     })
     state.playerOrder.push(state.nextPlayerId)
-    state.nextPlayerId++
+    state.nextPlayerId = "" + (+state.nextPlayerId + 1)
     updateRank(state.ruleKey, state)
   },
   deletePlayer(state, id) {
@@ -59,9 +63,10 @@ const mutations = {
       throw new Error(`player <${id}> is not found`)
     state.playerOrder.splice(index, 1)
     Vue.delete(state.players, id)
+    removeWinner(id, state)
+    updateRank(state.ruleKey, state)
     if (state.slasherId === id)
       state.slasherId = null
-    updateRank(state.ruleKey, state)
   },
   updatePlayerName(state, args) {
     let { id, name } = args
@@ -75,10 +80,10 @@ const mutations = {
 
   // Judgement Operations
   updateSlasherId(state, slasherId) {
-    state.slasherId = +slasherId
+    state.slasherId = "" + slasherId
   },
   updateCorrectlyAnswererIds(state, correctlyAnswererIds) {
-    state.correctlyAnswererIds = correctlyAnswererIds.map((i) => +i)
+    state.correctlyAnswererIds = correctlyAnswererIds.map((i) => "" + i)
   },
   resolveSlash(state) {
     resolveSlash(state.ruleKey, state)

@@ -27,5 +27,6 @@ module.exports = {
     "space-before-function-paren": [WARN, "never"],
     "no-console": PRODUCTION_ERROR,
     "no-debugger": PRODUCTION_ERROR,
+    "no-constant-condition": [ERROR, { "checkLoops": false }],
   }
 }

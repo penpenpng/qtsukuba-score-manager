@@ -13,6 +13,7 @@
     <button @click="deletePlayer">delete</button>
     <div>
       <ul>
+        <li>ID: {{ player.id }}</li>
         <li>name: {{ name }}</li>
         <li>rank: {{ player.rank }}</li>
         <li
