@@ -35,7 +35,8 @@ const mutations = {
     state.slasherId = null
     state.scoreDefinitions = getScoreDefinitions(ruleKey)
 
-    for (let playerState of Object.values(state.players)) playerState.score = createInitialScore(ruleKey)
+    for (let playerState of Object.values(state.players))
+      playerState.score = createInitialScore(ruleKey)
     updateRank(state.ruleKey, state)
   },
 
@@ -54,9 +55,12 @@ const mutations = {
   },
   deletePlayer(state, id) {
     let index = state.playerOrder.findIndex(i => i === id)
-    if (index < 0) throw new Error(`player <${id}> is not found`)
+    if (index < 0)
+      throw new Error(`player <${id}> is not found`)
     state.playerOrder.splice(index, 1)
     Vue.delete(state.players, id)
+    if (state.slasherId === id)
+      state.slasherId = null
     updateRank(state.ruleKey, state)
   },
   updatePlayerName(state, args) {

@@ -14,6 +14,7 @@
     <div>
       <ul>
         <li>name: {{ name }}</li>
+        <li>rank: {{ player.rank }}</li>
         <li
           v-for="scoreKey in Object.keys(player.score)"
           :key="scoreKey">{{ scoreKey }}: {{ player.score[scoreKey].value }}</li>
