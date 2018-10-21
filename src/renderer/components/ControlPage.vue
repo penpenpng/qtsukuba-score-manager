@@ -18,6 +18,7 @@
     <button @click="appendPlayer">append</button>
     <button @click="resolveSlash">resolve</button>
     <QuizControl></QuizControl>
+    <button @click="selectAndReadCsv">read csv</button>
   </div>
 </template>
 

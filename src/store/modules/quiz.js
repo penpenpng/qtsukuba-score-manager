@@ -1,3 +1,4 @@
+import Vue from "vue"
 
 
 const state = {
@@ -8,37 +9,35 @@ const state = {
     Genre1: 0,
     Genre2: 0,
   },
+  type: {
+    Genre1: "normal",
+    Genre2: "normal",
+  },
   data: {
     Genre1: [
       {
-        type: "normal",
         q: "1-1?",
         a: "1-1!",
       },
       {
-        type: "normal",
         q: "1-2?",
         a: "1-2!",
       },
       {
-        type: "normal",
         q: "1-2?",
         a: "1-2!",
       },
     ],
     Genre2: [
       {
-        type: "normal",
         q: "2-1?",
         a: "2-1!",
       },
       {
-        type: "normal",
         q: "2-2?",
         a: "2-2!",
       },
       {
-        type: "normal",
         q: "2-2?",
         a: "2-2!",
       },
@@ -86,6 +85,24 @@ const mutations = {
     ) throw new Error("Invalid argument")
     
     state.viewPhase = phase
+  },
+  loadNormalQuizData(state, data) {
+    let message = []
+    for (let genre of Object.keys(data)) {
+      Vue.set(state.cursor, genre, 0)
+      Vue.set(state.type, genre, "normal")
+      Vue.set(state.data, genre, data[genre])
+      if (state.genres.findIndex((g) => g === genre) < 0) {
+        state.genres.push(genre)
+        message.push(`"${genre}"は正常に読み込まれました`)
+      } else {
+        message.push(`"${genre}"は上書きされました`)
+      }
+    }
+
+    if (process.type === "renderer") {
+      alert(message.join("\n"))
+    }
   }
 }
 

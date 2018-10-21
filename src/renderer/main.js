@@ -19,11 +19,18 @@ ipcRenderer.on("initialize", (e, state) => {
   store.replaceState(state)
 })
 
+ipcRenderer.on("notice-error", (e, text) => {
+  alert(text)
+})
+
 Vue.mixin({
   methods: {
     push(type, payload) {
       ipcRenderer.send("push", type, payload)
     },
+    selectAndReadCsv() {
+      ipcRenderer.send("select-and-read-csv")
+    }
   },
 })
 

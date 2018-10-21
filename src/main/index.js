@@ -4,7 +4,15 @@ import {
   app,
   BrowserWindow,
   ipcMain,
+  dialog,
 } from "electron"
+import {
+  readFileSync
+} from "fs"
+import {
+  parse as parsePath
+} from "path"
+import parseCsv from "csv-parse/lib/sync"
 
 import store from "../store"
 
@@ -34,11 +42,7 @@ function main() {
     if (!windows.control) createControlWindow()
   })
 
-  ipcMain.on("push", (e, type, payload) => {
-    for (let w of Object.values(windows)) if (w)
-      w.webContents.send("postback", type, payload)
-    store.commit(type, payload)
-  })
+  ipcMain.on("push", commit)
   
   ipcMain.on("fetch", () => {
     for (let w of Object.values(windows)) if (w)
@@ -47,6 +51,63 @@ function main() {
 
   ipcMain.on("open-view-page", () => {
     if (!windows.view) createViewWindow()
+  })
+
+  ipcMain.on("select-and-read-csv", (e) => {
+    let paths = dialog.showOpenDialog(e.sender, {
+      properties: ["openFile", "multiSelections"],
+      filters: [{name: "csv", extensions: [".csv"]}],
+    })
+
+    if (!paths)
+      return
+    
+    let data = {}
+    let errors = []
+    for (let path of paths) {
+      let { base, name, ext } = parsePath(path)
+      const genre = name
+
+      if (ext !== ".csv" && ext !== ".CSV") {
+        errors.push(`${base}はcsvファイルではありません`)
+        continue
+      }
+
+      let content
+      try {
+        content = readFileSync(path, {
+          encoding: "utf-8"
+        })
+      } catch (_) {
+        errors.push(`${base}の読み込みに失敗しました`)
+        continue
+      }
+
+      let list = []
+      try {
+        const csv = parseCsv(content)
+        for (let row of csv)
+          list.push({
+            q: row[0],
+            a: row[1],
+          })
+      } catch (_) {
+        errors.push(`${base}のパースに失敗しました`)
+        continue
+      }
+
+      if (list.length <= 0) {
+        errors.push(`${base}は空です`)
+        continue
+      }
+
+      data[genre] = list
+    }
+
+    if (errors.length > 0)
+      noticeError(e.sender, errors.join("\n"))
+    if (data)
+      commit("postback", "loadNormalQuizData", data)
   })
 
   createControlWindow()
@@ -82,6 +143,19 @@ function createViewWindow() {
   })
 }
 
+
+function noticeError(window, text) {
+  window.webContents.send("notice-error", text)
+}
+
+
+function commit(e, type, payload) {
+  for (let w of Object.values(windows)) if (w)
+    w.webContents.send("postback", type, payload)
+  store.commit(type, payload)
+}
+
+  
 app.on("ready", main)
 
 
