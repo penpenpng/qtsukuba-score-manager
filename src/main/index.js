@@ -111,6 +111,7 @@ function main() {
   })
 
   createControlWindow()
+  createViewWindow()
 }
 
 
@@ -136,7 +137,7 @@ function createViewWindow() {
     width: 1000,
   })
 
-  windows.view.loadURL(winURL + "/#/test")
+  windows.view.loadURL(winURL + "/#/view")
 
   windows.view.on("closed", () => {
     windows.view = null

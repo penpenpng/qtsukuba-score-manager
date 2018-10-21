@@ -11,8 +11,9 @@ export default new Router({
       component: require("@/components/ControlPage").default,
     },
     {
-      path: "*",
-      redirect: "/",
+      path: "/view",
+      name: "view-page",
+      component: require("@/components/ViewPage").default,
     },
   ],
 })

@@ -24,8 +24,8 @@
 
 <script>
   import { mapState } from "vuex"
-  import PlayerControl from "./PlayerControl.vue"
-  import QuizControl from "./QuizControl.vue"
+  import PlayerControl from "./ControlPage/PlayerControl.vue"
+  import QuizControl from "./ControlPage/QuizControl.vue"
 
   export default {
     components: {
