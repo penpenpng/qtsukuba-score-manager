@@ -1,10 +1,10 @@
 <template>
   <div class="control-page">
     <label>
-      ルール: 
+      ルール:
       <select v-model="ruleKey">
         <option
-          v-for="option in ruleOptions" 
+          v-for="option in ruleOptions"
           :key="option.key"
           :value="option.key">{{ option.label }}</option>
       </select>
@@ -17,9 +17,17 @@
       :key="playerId"
       :player-id="playerId"
       :player-no="no + 1"></player-control>
-    <base-button @click.native="reset">リセット</base-button>
-    <base-button @click.native="resolveSlash">スコア処理</base-button>
-    <base-button @click.native="redo">スコア処理をキャンセルする</base-button>
+    <div class="actions">
+      <base-button
+        @click.native="resolveSlash"
+        class="button execute-button">スコア処理</base-button>
+      <base-button
+        @click.native="reset"
+        class="button">リセット</base-button>
+      <base-button
+        @click.native="redo"
+        class="button">スコア処理をキャンセルする</base-button>
+    </div>
 
     <h1>クイズ表示制御</h1>
     <QuizControl></QuizControl>
@@ -37,9 +45,21 @@
       padding-left: 20px;
       margin: 0;
       font-weight: normal;
-    }  
+    }
+
+    .actions {
+      padding: 15px;
+      background: thistle;
+
+      .button {
+        margin-left: 15px;
+      }
+      
+      .execute-button {
+        background: orange;
+      }
+    }
   }
-  
 </style>
 
 
