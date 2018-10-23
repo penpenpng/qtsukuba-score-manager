@@ -1,36 +1,50 @@
 <template>
   <div class="player-view">
-    <div class="no">No. {{ playerNo}}</div>
+    <div class="no">No. {{ playerNo }}</div>
     <div class="name">{{ player.name }}</div>
     <div
       v-for="scoreKey in Object.keys(player.score)"
       :key="scoreKey"
-      class="score">{{ player.score[scoreKey].value }}</div>
+      class="score-wrapper">
+      <div class="score">
+        {{ player.score[scoreKey].value }}
+      </div>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
   .player-view {
-    height: 300px;
+    height: 100%;
+    width: 80px;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
     grid-auto-columns: 1fr;
-    grid-auto-rows: 50px;
+    grid-auto-rows: 5rem;
     box-shadow: 0 0 2px 0px darkgrey;
 
     .no {
       border-bottom: solid 1px;
+      text-align: center;
     }
 
     .name {
+      padding-top: 10px;
       writing-mode: vertical-rl;
       justify-self: center;
+      font-size: 3rem;
     }
 
-    .score {
+    .score-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       background: lightblue;
-      text-align: center;
+
+      .score {
+        font-size: 4rem;
+      }
     }
   }
 </style>
