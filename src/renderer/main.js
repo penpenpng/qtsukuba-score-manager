@@ -23,6 +23,17 @@ ipcRenderer.on("notice-error", (e, text) => {
   alert(text)
 })
 
+const requireComponent = require.context("./components/Base", false)
+requireComponent.keys().forEach(fileName => {
+  const componentConfig = requireComponent(fileName)
+  const componentName = fileName.replace(/^\.\/(.*)\.\w+$/, '$1')
+
+  Vue.component(
+    componentName,
+    componentConfig.default || componentConfig
+  )
+})
+
 Vue.mixin({
   methods: {
     push(type, payload) {
