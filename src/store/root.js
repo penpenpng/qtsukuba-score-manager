@@ -88,7 +88,12 @@ const mutations = {
   resolveSlash(state) {
     resolveSlash(state.ruleKey, state)
     updateRank(state.ruleKey, state)
+    mutations.resetSelections(state)
   },
+  resetSelections(state) {
+    state.slasherId = null
+    state.correctlyAnswererIds = []
+  }
 }
 
 export default {

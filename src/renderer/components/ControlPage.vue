@@ -80,7 +80,7 @@
 
       },
       reset() {
-
+        this.push("resetSelections")
       },
     }
   }
