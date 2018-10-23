@@ -30,9 +30,9 @@
       <div class="question" :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
       <div class="answer" :class="{ hidden: viewPhase !== 'showAll'}">{{ currentQuestion.a }}</div>
     </div>
-    <button @click="hideAll">Hide All</button>
-    <button @click="showQuestion">Show Question</button>
-    <button @click="showAll">Show All</button>
+    <base-button @click="hideAll">Hide All</base-button>
+    <base-button @click="showQuestion">Show Question</base-button>
+    <base-button @click="showAll">Show All</base-button>
   </div>
 </template>
 

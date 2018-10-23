@@ -9,7 +9,7 @@
           :value="option.key">{{ option.label }}</option>
       </select>
     </label>
-    <button @click="appendPlayer">プレイヤーを追加</button>
+    <base-button @click="appendPlayer">プレイヤーを追加</base-button>
 
     <h1>スコア操作</h1>
     <player-control
@@ -17,13 +17,13 @@
       :key="playerId"
       :player-id="playerId"
       :player-no="no + 1"></player-control>
-    <button @click="reset">リセット</button>
-    <button @click="redo">Redo</button>
-    <button @click="resolveSlash">スコア処理</button>
+    <base-button @click="reset">リセット</base-button>
+    <base-button @click="resolveSlash">スコア処理</base-button>
+    <base-button @click="redo">スコア処理をキャンセルする</base-button>
 
     <h1>クイズ表示制御</h1>
     <QuizControl></QuizControl>
-    <button @click="selectAndReadCsv">read csv</button>
+    <base-button @click="selectAndReadCsv">read csv</base-button>
   </div>
 </template>
 
