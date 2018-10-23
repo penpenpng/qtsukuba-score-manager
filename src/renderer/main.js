@@ -1,4 +1,6 @@
 import Vue from "vue"
+import upperFirst from "lodash/upperFirst"
+import camelCase from "lodash/camelCase"
 import axios from "axios"
 
 import App from "./App"
@@ -26,7 +28,7 @@ ipcRenderer.on("notice-error", (e, text) => {
 const requireComponent = require.context("./components/Base", false)
 requireComponent.keys().forEach(fileName => {
   const componentConfig = requireComponent(fileName)
-  const componentName = fileName.replace(/^\.\/(.*)\.\w+$/, '$1')
+  const componentName = upperFirst(camelCase(fileName.replace(/^\.\/(.*)\.\w+$/, "$1")))
 
   Vue.component(
     componentName,
