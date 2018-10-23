@@ -1,26 +1,47 @@
 <template>
-  <div>
-    <select v-model="ruleKey">
-      <option
-        v-for="option in ruleOptions" 
-        :key="option.key"
-        :value="option.key">{{ option.label }}</option>
-    </select>
-    <ul>
-      <li> slasherId: {{ slasherId }} </li>
-      <li> ranking: {{ ranking }} </li>
-    </ul>
+  <div class="control-page">
+    <label>
+      ルール: 
+      <select v-model="ruleKey">
+        <option
+          v-for="option in ruleOptions" 
+          :key="option.key"
+          :value="option.key">{{ option.label }}</option>
+      </select>
+    </label>
+    <button @click="appendPlayer">プレイヤーを追加</button>
+
+    <h1>スコア操作</h1>
     <player-control
       v-for="(playerId, no) in playerOrder"
       :key="playerId"
       :player-id="playerId"
       :player-no="no + 1"></player-control>
-    <button @click="appendPlayer">append</button>
-    <button @click="resolveSlash">resolve</button>
+    <button @click="reset">リセット</button>
+    <button @click="redo">Redo</button>
+    <button @click="resolveSlash">スコア処理</button>
+
+    <h1>クイズ表示制御</h1>
     <QuizControl></QuizControl>
     <button @click="selectAndReadCsv">read csv</button>
   </div>
 </template>
+
+<style lang="scss" scoped>
+  .control-page {
+    padding: 20px;
+
+    h1 {
+      font-size: 1.5rem;
+      padding: 10px;
+      padding-left: 20px;
+      margin: 0;
+      font-weight: normal;
+    }  
+  }
+  
+</style>
+
 
 <script>
   import { mapState } from "vuex"
@@ -54,7 +75,13 @@
       },
       resolveSlash() {
         this.push("resolveSlash")
-      }
+      },
+      redo() {
+
+      },
+      reset() {
+
+      },
     }
   }
 </script>

@@ -1,8 +1,10 @@
 <template>
   <div class="player-control">
-    <span> {{ playerNo }} </span>
-    <input type="radio" :value="playerId" v-model="slasherId">
-    <input type="checkbox" :value="playerId" v-model="correctlyAnswererIds">
+    <div class="actions">
+      <span> No. {{ playerNo }} </span>
+      <input type="radio" :value="playerId" v-model="slasherId">
+      <input type="checkbox" :value="playerId" v-model="correctlyAnswererIds">
+    </div>
     <input type="text" v-model="name">
     <input
       v-for="scoreKey in Object.keys(player.score)"
@@ -11,21 +13,22 @@
       :value="player.score[scoreKey].value"
       @input="updateScore($event, scoreKey)">
     <button @click="deletePlayer">delete</button>
-    <div>
-      <ul>
-        <li>ID: {{ player.id }}</li>
-        <li>name: {{ name }}</li>
-        <li>rank: {{ player.rank }}</li>
-        <li
-          v-for="scoreKey in Object.keys(player.score)"
-          :key="scoreKey">{{ scoreKey }}: {{ player.score[scoreKey].value }}</li>
-      </ul>
-    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
+  .player-control {
+    background: ivory;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
+    .actions {
+      padding: 10px;
+      margin-right: 10px;
+      background: thistle;
+    }
+  }
 </style>
 
 <script>
