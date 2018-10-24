@@ -1,6 +1,6 @@
-# quizscore-manager
+# qtsukuba-score-manager
 
-> An electron-app for managing score of quiz
+> score management app for Sohosai & Q-tsukuba
 
 #### Build Setup
 
@@ -8,16 +8,8 @@
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:9080
-npm run dev
-
-# build electron application for production
+# build electron application for windows
 npm run build
-
-
-# lint all JS/Vue component files in `src/`
-npm run lint
-
 ```
 
 ---

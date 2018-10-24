@@ -24,6 +24,6 @@
 
 <script>
   export default {
-    name: "quizscore-manager",
+    name: "qtsukuba-score-manager",
   }
 </script>

@@ -1,8 +1,8 @@
 {
-  "name": "quizscore-manager",
+  "name": "qtsukuba-score-manager",
   "version": "0.0.1",
   "author": "poman <poman1638m@gmail.com>",
-  "description": "An electron-app for managing score of quiz",
+  "description": "score management app for Sohosai & Q-tsukuba",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
@@ -19,8 +19,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "quizscore-manager",
-    "appId": "",
+    "productName": "qtsukuba-score-manager",
+    "appId": "qtsukuba-score-manager",
     "directories": {
       "output": "build"
     },
