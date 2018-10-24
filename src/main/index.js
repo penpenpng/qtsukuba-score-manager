@@ -63,13 +63,13 @@ function main() {
       return
     
     let data = {}
-    let errors = []
+    let messages = []
     for (let path of paths) {
       let { base, name, ext } = parsePath(path)
       const genre = name
 
       if (ext !== ".csv" && ext !== ".CSV") {
-        errors.push(`${base}はcsvファイルではありません`)
+        messages.push(`[ERROR] ${base}はcsvファイルではありません`)
         continue
       }
 
@@ -79,7 +79,7 @@ function main() {
           encoding: "utf-8"
         })
       } catch (_) {
-        errors.push(`${base}の読み込みに失敗しました`)
+        messages.push(`[ERROR] ${base}の読み込みに失敗しました`)
         continue
       }
 
@@ -92,22 +92,26 @@ function main() {
             a: row[1],
           })
       } catch (_) {
-        errors.push(`${base}のパースに失敗しました`)
+        messages.push(`[ERROR] ${base}のパースに失敗しました`)
         continue
       }
 
       if (list.length <= 0) {
-        errors.push(`${base}は空です`)
+        messages.push(`[ERROR] ${base}は空です`)
         continue
       }
 
+      if (store.state.quiz.genres.findIndex((g) => g === genre) < 0) {
+        messages.push(`"${genre}"は正常に読み込まれました`)
+      } else {
+        messages.push(`"${genre}"は上書きされました`)
+      }
       data[genre] = list
     }
 
-    if (errors.length > 0)
-      noticeError(e.sender, errors.join("\n"))
     if (data)
       commit("postback", "loadNormalQuizData", data)
+    sendNotice(e.sender, messages.join("\n"))
   })
 
   createControlWindow()
@@ -145,8 +149,8 @@ function createViewWindow() {
 }
 
 
-function noticeError(window, text) {
-  window.webContents.send("notice-error", text)
+function sendNotice(window, text) {
+  window.webContents.send("notice", text)
 }
 
 

@@ -21,7 +21,7 @@ ipcRenderer.on("initialize", (e, state) => {
   store.replaceState(state)
 })
 
-ipcRenderer.on("notice-error", (e, text) => {
+ipcRenderer.on("notice", (e, text) => {
   alert(text)
 })
 

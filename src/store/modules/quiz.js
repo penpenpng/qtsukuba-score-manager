@@ -87,21 +87,13 @@ const mutations = {
     state.viewPhase = phase
   },
   loadNormalQuizData(state, data) {
-    let message = []
     for (let genre of Object.keys(data)) {
       Vue.set(state.cursor, genre, 0)
       Vue.set(state.type, genre, "normal")
       Vue.set(state.data, genre, data[genre])
       if (state.genres.findIndex((g) => g === genre) < 0) {
         state.genres.push(genre)
-        message.push(`"${genre}"は正常に読み込まれました`)
-      } else {
-        message.push(`"${genre}"は上書きされました`)
       }
-    }
-
-    if (process.type === "renderer") {
-      alert(message.join("\n"))
     }
   }
 }
