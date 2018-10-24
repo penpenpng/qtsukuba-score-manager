@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <section class="quiz-control">
     <label>
       表示中のジャンル: 
       <select v-model="currentGenre">
@@ -9,6 +9,9 @@
           :value="genre">{{ genre }}</option>
       </select>
     </label>
+    <base-button @click.native="selectAndReadCsv">csvから読み込み</base-button>
+    
+    <h2>クイズ一覧</h2>
     <table class="quiz-table">
       <thead>
         <tr>
@@ -29,6 +32,8 @@
         </tr>
       </tbody>
     </table>
+
+    <h2>プレビュー</h2>
     <div class="preview">
       <div class="no">No. {{ currentGenreCursor + 1}}</div>
       <div class="question" :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
@@ -37,7 +42,7 @@
     <base-button @click.native="hideAll">Hide All</base-button>
     <base-button @click.native="showQuestion">Show Question</base-button>
     <base-button @click.native="showAll">Show All</base-button>
-  </div>
+  </section>
 </template>
 
 <style lang="scss" scoped>
@@ -49,35 +54,45 @@
     border-collapse: collapse;
     overflow-y: scroll;
 
-    th {
-      border: 1px solid;
-      text-align: left;
+    thead tr {
+      background: aliceblue;
 
-      &.no {
-        width: 5%;
-        min-width: 3em;
-      }
+      th {
+        border: 1px solid;
+        text-align: left;
 
-      &.question {
-        width: 75%;
-      }
+        &.no {
+          width: 5%;
+          min-width: 3em;
+        }
 
-      &.answer {
-        width: 20%;
+        &.question {
+          width: 75%;
+        }
+
+        &.answer {
+          width: 20%;
+        }
       }
     }
 
-    tr {
+    tbody tr {
+      cursor: pointer;
+
       td {
         border: 1px solid;
         overflow-x: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
       }
-  
-      &.selected {
-        background: dimgray;
+
+      &.selected, &:hover {
+        background: lightskyblue;
         color: white;
+
+        &:hover:not(.selected) {
+          opacity: 0.5;
+        }
       }
     }
   }

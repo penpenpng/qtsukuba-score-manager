@@ -28,6 +28,7 @@
       height: 90%;
       display: grid;
       grid-template-rows: auto 1fr auto;
+      grid-template-columns: 100%;
       padding: 5px;
 
       .question {
@@ -35,6 +36,8 @@
         padding: 5px;
         border-top: solid 0.5px darkgray;
         border-bottom: solid 0.5px rgb(54, 10, 10);
+        overflow-wrap: break-word;
+        text-overflow: ellipsis;
       }
 
       .answer {
@@ -42,6 +45,7 @@
         text-align: right;
         padding: 5px;
         padding-right: 15px;
+        text-overflow: ellipsis;
       }
     }
   }

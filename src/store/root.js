@@ -31,6 +31,9 @@ const state = {
 
 const mutations = {
   // Logic Setup
+  updateTitle(state, title) {
+    state.title = title
+  },
   setRule(state, ruleKey) {
     state.ruleKey = ruleKey
     state.correctlyAnswererIds.splice(0, state.correctlyAnswererIds.length)

@@ -1,6 +1,10 @@
 <template>
   <div class="control-page">
     <label>
+      タイトル:
+      <input type="text" v-model="title">
+    </label>
+    <label>
       ルール:
       <select v-model="ruleKey">
         <option
@@ -9,29 +13,12 @@
           :value="option.key">{{ option.label }}</option>
       </select>
     </label>
-    <base-button @click.native="appendPlayer">プレイヤーを追加</base-button>
 
-    <h1>スコア操作</h1>
-    <player-control
-      v-for="(playerId, no) in playerOrder"
-      :key="playerId"
-      :player-id="playerId"
-      :player-no="no + 1"></player-control>
-    <div class="actions">
-      <base-button
-        @click.native="resolveSlash"
-        class="button execute-button">スコア処理</base-button>
-      <base-button
-        @click.native="reset"
-        class="button">リセット</base-button>
-      <base-button
-        @click.native="redo"
-        class="button">スコア処理をキャンセルする</base-button>
-    </div>
+    <h1>プレイヤー/スコア管理</h1>
+    <players-control class="control-section"></players-control>
 
     <h1>クイズ表示制御</h1>
-    <QuizControl></QuizControl>
-    <base-button @click.native="selectAndReadCsv">read csv</base-button>
+    <quiz-control class="control-section"></quiz-control>
   </div>
 </template>
 
@@ -39,6 +26,16 @@
   .control-page {
     padding: 20px;
 
+    .control-section {
+      padding: 15px;
+      box-shadow: 0 0 2px 0px grey;
+      border-radius: 5px;
+    }
+  }
+</style>
+
+<style lang="scss">
+  .control-page {
     h1 {
       font-size: 1.5rem;
       padding: 10px;
@@ -47,30 +44,24 @@
       font-weight: normal;
     }
 
-    .actions {
-      padding: 15px;
-      background: thistle;
-
-      .button {
-        margin-left: 15px;
-      }
-      
-      .execute-button {
-        background: orange;
-      }
+    h2 {
+      font-size: 1.2rem;
+      padding: 10px;
+      padding-left: 20px;
+      margin: 0;
+      font-weight: bold;
     }
   }
 </style>
 
-
 <script>
   import { mapState } from "vuex"
-  import PlayerControl from "./ControlPage/PlayerControl.vue"
+  import PlayersControl from "./ControlPage/PlayersControl.vue"
   import QuizControl from "./ControlPage/QuizControl.vue"
 
   export default {
     components: {
-      PlayerControl,
+      PlayersControl,
       QuizControl,
     },
     computed: {
@@ -82,26 +73,17 @@
           this.push("setRule", value)
         }
       },
+      title: {
+        get() {
+          return this.$store.state.title
+        },
+        set(value) {
+          this.push("updateTitle", value)
+        }
+      },
       ...mapState({
         ruleOptions: state => state.ruleOptions,
-        slasherId: state => state.slasherId,
-        ranking: state => state.ranking,
-        playerOrder: state => state.playerOrder,
       })
     },
-    methods: {
-      appendPlayer() {
-        this.push("appendPlayer")
-      },
-      resolveSlash() {
-        this.push("resolveSlash")
-      },
-      redo() {
-
-      },
-      reset() {
-        this.push("resetSelections")
-      },
-    }
   }
 </script>

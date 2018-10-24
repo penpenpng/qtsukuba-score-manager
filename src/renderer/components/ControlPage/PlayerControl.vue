@@ -12,7 +12,9 @@
       type="number"
       :value="player.score[scoreKey].value"
       @input="updateScore($event, scoreKey)">
-    <button @click="deletePlayer">delete</button>
+    <div class="float-right">
+      <base-button class="delete-button" @click.native="deletePlayer">プレイヤーを削除</base-button>
+    </div>
   </div>
 </template>
 
@@ -27,6 +29,16 @@
       padding: 10px;
       margin-right: 10px;
       background: thistle;
+    }
+
+    .float-right {
+      flex-grow: 2;
+    }
+
+    .delete-button {
+      float: right;
+      margin-right: 10px;
+      background: indianred;
     }
   }
 </style>
