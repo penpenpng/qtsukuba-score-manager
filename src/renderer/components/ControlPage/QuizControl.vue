@@ -1,25 +1,29 @@
 <template>
   <div>
-    <select v-model="currentGenre">
-      <option
-        v-for="genre in genres" 
-        :key="genre"
-        :value="genre">{{ genre }}</option>
-    </select>
+    <label>
+      表示中のジャンル: 
+      <select v-model="currentGenre">
+        <option
+          v-for="genre in genres" 
+          :key="genre"
+          :value="genre">{{ genre }}</option>
+      </select>
+    </label>
     <table class="quiz-table">
       <thead>
         <tr>
-          <th class="question"></th>
-          <th class="answer"></th>
+          <th class="no">#</th>
+          <th class="question">問題</th>
+          <th class="answer">答え</th>
         </tr>
       </thead>
       <tbody>
         <tr
           v-for="(row, index) in currentGenreData"
           :key="currentGenre + index"
-          class="quiz-table-row"
           :class="{ selected: currentGenreCursor == index }"
           @click="jumpCursor(index)">
+          <td>{{ index + 1 }}</td>
           <td>{{ row.q }}</td>
           <td>{{ row.a }}</td>
         </tr>
@@ -38,12 +42,43 @@
 
 <style lang="scss" scoped>
   .quiz-table {
+    width: 100%;
     max-height: 800px;
+    table-layout: fixed;
+    border: 1px solid;
+    border-collapse: collapse;
     overflow-y: scroll;
 
-    .quiz-table-row.selected {
-      background: dimgray;
-      color: white;
+    th {
+      border: 1px solid;
+      text-align: left;
+
+      &.no {
+        width: 5%;
+        min-width: 3em;
+      }
+
+      &.question {
+        width: 75%;
+      }
+
+      &.answer {
+        width: 20%;
+      }
+    }
+
+    tr {
+      td {
+        border: 1px solid;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+  
+      &.selected {
+        background: dimgray;
+        color: white;
+      }
     }
   }
 

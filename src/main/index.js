@@ -88,8 +88,8 @@ function main() {
         const csv = parseCsv(content)
         for (let row of csv)
           list.push({
-            q: row[0],
-            a: row[1],
+            q: row[0].trim(),
+            a: row[1].trim(),
           })
       } catch (_) {
         messages.push(`[ERROR] ${base}のパースに失敗しました`)
