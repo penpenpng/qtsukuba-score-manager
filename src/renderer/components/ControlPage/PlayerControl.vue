@@ -2,8 +2,20 @@
   <div class="player-control">
     <div class="actions">
       <span> No. {{ playerNo }} </span>
-      <input type="radio" :value="playerId" v-model="slasherId">
-      <input type="checkbox" :value="playerId" v-model="correctlyAnswererIds">
+      <input
+        class="slasher-radio"
+        :id="'slash-' + playerId"
+        type="radio"
+        :value="playerId"
+        v-model="slasherId">
+      <label :for="'slash-' + playerId">解答権</label>
+      <input
+        class="correct-check"
+        :id="'correct-' + playerId"
+        type="checkbox"
+        :value="playerId"
+        v-model="correctlyAnswererIds">
+      <label :for="'correct-' + playerId">正解</label>
     </div>
     <input type="text" v-model="name">
     <input
@@ -19,6 +31,17 @@
 </template>
 
 <style scoped lang="scss">
+  @mixin checkbox {
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 10px;
+    padding: 7px 10px;
+    box-shadow: 0px 0px 3px gray;
+    border-radius: 5px;
+    background: lightgray;
+    color: darkgray;
+  }
+
   .player-control {
     background: ivory;
     display: flex;
@@ -26,9 +49,45 @@
     align-items: center;
 
     .actions {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
       padding: 10px;
       margin-right: 10px;
-      background: thistle;
+
+      .slasher-radio {
+        display: none;
+
+        & + label {
+          @include checkbox();
+
+          &:hover {
+            opacity: 0.7;
+          }
+        }
+
+        &:checked + label {
+          background: gold;
+          color: black;
+        }
+      }
+
+      .correct-check {
+        display: none;
+
+        & + label {
+          @include checkbox();
+
+          &:hover {
+            opacity: 0.7;
+          }
+        }
+
+        &:checked + label {
+          background: lightgreen;
+          color: black;
+        }
+      }
     }
 
     .float-right {
