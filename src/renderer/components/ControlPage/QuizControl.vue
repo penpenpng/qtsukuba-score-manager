@@ -10,7 +10,9 @@
           :value="genre">{{ genre }}</option>
       </select>
     </label>
-    <base-button @click.native="selectAndReadCsv">csvから読み込み</base-button>
+    <div class="quiz-reader">
+      <base-button class="button" @click.native="selectAndReadCsv">csvから読み込み</base-button>
+    </div>
     <table class="quiz-table">
       <thead>
         <tr>
@@ -33,13 +35,15 @@
     </table>
 
     <h2>表示状態変更</h2>
-    <label class="block">
+    <label class="auto-display-control">
       <input type="checkbox" :checked="autoDisplay" @input="toggleAutoDisplayMode">
       スコア処理時に次の問題と答えを表示する
     </label>
-    <base-button @click.native="hideAll">すべて隠す</base-button>
-    <base-button @click.native="showQuestion">問題文だけ表示</base-button>
-    <base-button @click.native="showAll">すべて表示する</base-button>
+    <div class="view-state-control">
+      <base-button class="button" @click.native="hideAll">すべて隠す</base-button>
+      <base-button class="button" @click.native="showQuestion">問題文だけ表示</base-button>
+      <base-button class="button" @click.native="showAll">すべて表示する</base-button>
+    </div>
 
     <h2>プレビュー</h2>
     <div class="preview">
@@ -55,9 +59,19 @@
 </template>
 
 <style lang="scss" scoped>
+  .quiz-reader {
+    display: inline-block;
+    
+    .button {
+      margin-left: 15px;
+    }
+  }
+
   .quiz-table {
     width: 100%;
     max-height: 800px;
+    margin: 10px;
+    margin-bottom: 15px;
     table-layout: fixed;
     box-shadow: 0 0 2px 0px gray;
     border: 1px solid;
@@ -107,8 +121,17 @@
     }
   }
 
-  .block {
+  .auto-display-control {
     display: block;
+  }
+
+  .view-state-control {
+    margin: 10px;
+    margin-bottom: 15px;
+
+    .button:not(:first-child) {
+      margin-left: 15px;
+    }
   }
 
   .preview {

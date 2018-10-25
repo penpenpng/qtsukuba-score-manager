@@ -1,6 +1,6 @@
 <template>
   <div>
-    <base-button @click.native="appendPlayer">プレイヤーを追加</base-button>
+    <base-button class="append-button" @click.native="appendPlayer">プレイヤーを追加</base-button>
     <div class="players">
       <player-control
         v-for="(playerId, no) in playerOrder"
@@ -23,6 +23,11 @@
 </template>
 
 <style lang="scss" scoped>
+  .append-button {
+    margin: 10px;
+    margin-top: 0;
+  }
+
   .actions {
     padding: 15px;
 
