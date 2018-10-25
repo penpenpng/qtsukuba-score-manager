@@ -49,6 +49,7 @@
 
 
 <script>
+  import { ipcRenderer } from "electron"
   import { mapState } from "vuex"
   import PlayerControl from "./PlayerControl.vue"
 
@@ -69,7 +70,7 @@
         this.push("resolveSlash")
       },
       redo() {
-
+        ipcRenderer.send("fetch")
       },
       reset() {
         this.push("resetSelections")

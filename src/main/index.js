@@ -14,6 +14,7 @@ import {
   join as joinPath,
   parse as parsePath,
 } from "path"
+import cloneDeep from "lodash/cloneDeep"
 import parseCsv from "csv-parse/lib/sync"
 
 import store from "../store"
@@ -33,7 +34,7 @@ const winURL = process.env.NODE_ENV === "development"
 
 
 let windows = {}
-
+let backup = cloneDeep(store.state)
 
 function main() {
   app.on("window-all-closed", () => {
@@ -48,7 +49,7 @@ function main() {
   
   ipcMain.on("fetch", () => {
     for (let w of Object.values(windows)) if (w)
-      w.webContents.send("initialize", store.state)
+      w.webContents.send("initialize", backup)
   })
 
   ipcMain.on("open-view-page", () => {
@@ -119,7 +120,6 @@ function main() {
     if (messages)
       sendNotice(e.sender, messages.join("\n"))
   })
-
 
   ipcMain.on("select-and-read-imgdir", (e) => {
     const paths = dialog.showOpenDialog({
@@ -213,6 +213,10 @@ function sendNotice(window, text) {
 
 
 function commit(e, type, payload) {
+  if (type === "resolveSlash") {
+    backup = cloneDeep(store.state)
+  }
+
   for (let w of Object.values(windows)) if (w)
     w.webContents.send("postback", type, payload)
   store.commit(type, payload)
