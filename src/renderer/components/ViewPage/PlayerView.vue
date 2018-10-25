@@ -1,6 +1,5 @@
 <template>
   <div class="player-view-wrapper">
-    <div class="rank" :class="{ norank: !isRanked }">{{ rank }}</div>
     <div class="player-view">
       <div class="no">No. {{ playerNo }}</div>
       <div class="name">{{ player.name }}</div>
@@ -13,6 +12,7 @@
         </div>
       </div>
     </div>
+    <div class="rank" :class="{ norank: !isRanked }">{{ rank }}</div>
   </div>
 </template>
 
@@ -20,7 +20,7 @@
   .player-view-wrapper {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 1fr auto;
   }
 
   .rank {
