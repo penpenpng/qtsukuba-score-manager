@@ -48,6 +48,7 @@ function main() {
   ipcMain.on("push", commit)
   
   ipcMain.on("fetch", () => {
+    store.replaceState(backup)
     for (let w of Object.values(windows)) if (w)
       w.webContents.send("initialize", backup)
   })
