@@ -2,12 +2,19 @@ import Vue from "vue"
 import upperFirst from "lodash/upperFirst"
 import camelCase from "lodash/camelCase"
 import axios from "axios"
-
 import App from "./App"
 import router from "./router"
 import store from "../store"
+import {
+  ipcRenderer
+} from "electron"
+import {
+  readFileSync
+} from "fs"
+import {
+  parse as parsePath
+} from "path"
 
-import { ipcRenderer } from "electron"
 
 if (!process.env.IS_WEB) Vue.use(require("vue-electron"))
 Vue.http = Vue.prototype.$http = axios
@@ -43,6 +50,19 @@ Vue.mixin({
     },
     selectAndReadCsv() {
       ipcRenderer.send("select-and-read-csv")
+    },
+    selectAndReadImgdir() {
+      ipcRenderer.send("select-and-read-imgdir")
+    },
+    loadImageAsBase64(path) {
+      const { ext } = parsePath(path)
+      if (/png/i.test(ext)) {
+        return "data:image/png;base64," + readFileSync(path, "base64")
+      } else if (/jpe?g/i.test(ext)) {
+        return "data:image/jpeg;base64," + readFileSync(path, "base64")
+      } else {
+        return ""
+      }
     }
   },
 })

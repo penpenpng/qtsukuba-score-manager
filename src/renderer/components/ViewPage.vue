@@ -2,6 +2,7 @@
   <div class="view-page">
     <div class="header">{{ title }}</div>
     <div class="body">
+      <image-view class="image-view" v-if="imageDisplay"></image-view>
       <player-view
         v-for="(playerId, no) in playerOrder"
         :key="playerId"
@@ -36,6 +37,15 @@
       flex-direction: row;
       justify-content: space-around;
       padding: 15px;
+      position: relative;
+
+      .image-view {
+        position: absolute;
+        width: 80%;
+        height: 80%;
+        top: 10%;
+        left: 10%;
+      }
     }
   }
 </style>
@@ -44,15 +54,20 @@
   import { mapState } from "vuex"
   import PlayerView from "./ViewPage/PlayerView.vue"
   import QuizView from "./ViewPage/QuizView.vue"
+  import ImageView from "./ViewPage/ImageView.vue"
 
   export default {
     components: {
       PlayerView,
       QuizView,
+      ImageView,
     },
-    computed: mapState({
-      title: state => state.title,
-      playerOrder: state => state.playerOrder,
-    })
+    computed: {
+      ...mapState({
+        title: state => state.title,
+        playerOrder: state => state.playerOrder,
+        imageDisplay: state => state.quiz.imageDisplay,
+      })
+    },
   }
 </script>

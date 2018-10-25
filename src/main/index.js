@@ -7,10 +7,12 @@ import {
   dialog,
 } from "electron"
 import {
-  readFileSync
+  readFileSync,
+  readdirSync,
 } from "fs"
 import {
-  parse as parsePath
+  join as joinPath,
+  parse as parsePath,
 } from "path"
 import parseCsv from "csv-parse/lib/sync"
 
@@ -54,7 +56,7 @@ function main() {
   })
 
   ipcMain.on("select-and-read-csv", (e) => {
-    let paths = dialog.showOpenDialog(e.sender, {
+    const paths = dialog.showOpenDialog(e.sender, {
       properties: ["openFile", "multiSelections"],
       filters: [{name: "csv", extensions: [".csv"]}],
     })
@@ -65,7 +67,7 @@ function main() {
     let data = {}
     let messages = []
     for (let path of paths) {
-      let { base, name, ext } = parsePath(path)
+      const { base, name, ext } = parsePath(path)
       const genre = name
 
       if (ext !== ".csv" && ext !== ".CSV") {
@@ -114,7 +116,60 @@ function main() {
 
     if (data)
       commit("postback", "loadNormalQuizData", data)
-    sendNotice(e.sender, messages.join("\n"))
+    if (messages)
+      sendNotice(e.sender, messages.join("\n"))
+  })
+
+
+  ipcMain.on("select-and-read-imgdir", (e) => {
+    const paths = dialog.showOpenDialog({
+      properties: ["openDirectory", "multiSelections"],
+    })
+
+    if (!paths)
+      return
+    
+    let data = {}
+    let messages = []
+    for (let dir of paths) {
+      const files = readdirSync(dir)
+      let list = [{
+        q: "(この問題はダミーです)",
+        a: "",
+        path: "",
+      }]
+      for (let file of files.sort()) {
+        const { name, base, ext } = parsePath(file)
+
+        if (!/(jpe?g|png)/i.test(ext))
+          continue
+        
+        try {
+          let splitted = name.split("_")
+          list.push({
+            q: splitted[1].trim(),
+            a: splitted[2].trim(),
+            path: joinPath(dir, file),
+          })
+        } catch (_) {
+          messages.push(`[ERROR] ${base}はファイル名が不適切です`)
+          continue
+        }  
+      }
+
+      if (list.length <= 1) {
+        messages.push(`[ERROR] ${dir}には適切な画像ファイルがありません`)
+        continue
+      }
+
+      data[`[Visual] ${parsePath(dir).name}`] = list
+      messages.push(`${dir}から${list.length - 1}件の問題を読み込みました`)
+    }
+
+    if (data)
+      commit("postback", "loadImageQuizData", data)
+    if (messages)
+      sendNotice(e.sender, messages.join("\n"))
   })
 
   createControlWindow()

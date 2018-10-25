@@ -12,6 +12,7 @@
     </label>
     <div class="quiz-reader">
       <base-button class="button" @click.native="selectAndReadCsv">csvから読み込み</base-button>
+      <base-button class="button" @click.native="selectAndReadImgdir">画像フォルダから読み込み</base-button>
     </div>
     <table class="quiz-table">
       <thead>
@@ -43,18 +44,25 @@
       <base-button class="button" @click.native="hideAll">すべて隠す</base-button>
       <base-button class="button" @click.native="showQuestion">問題文だけ表示</base-button>
       <base-button class="button" @click.native="showAll">すべて表示する</base-button>
+      <base-button class="button image-button" @click.native="toggleImageDisplay">画像を表示する/隠す</base-button>
     </div>
 
     <h2>プレビュー</h2>
     <div class="preview">
-      <div class="no">Q. {{ questionNo }}</div>
-      <div
-        class="question"
-        :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
-      <div
-        class="answer"
-        :class="{ hidden: viewPhase !== 'showAll'}">A. {{ currentQuestion.a }}</div>
+      <div class="sentence-preview">
+        <div class="no">Q. {{ questionNo }}</div>
+        <div
+          class="question"
+          :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
+        <div
+          class="answer"
+          :class="{ hidden: viewPhase !== 'showAll'}">A. {{ currentQuestion.a }}</div>
+      </div>
+      <div class="image-preview">
+        <img :src="src">
+      </div>
     </div>
+
   </section>
 </template>
 
@@ -132,9 +140,19 @@
     .button:not(:first-child) {
       margin-left: 15px;
     }
+
+    .image-button {
+      background: orange;
+    }
   }
 
   .preview {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 70% 30%;
+  }
+
+  .sentence-preview {
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 2px 0px gray;
@@ -161,7 +179,21 @@
 
     .hidden {
       background: gainsboro;
-      // color: white;
+    }
+  }
+
+  .image-preview {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 2px 0px grey;
+    margin-left: 5px;
+    padding: 5px;
+
+    img {
+      display: block;
+      max-height: 100%;
+      max-width: 100%;
     }
   }
 </style>
@@ -181,6 +213,13 @@
         set(value) {
           this.push("changeGenre", value)
         },
+      },
+      src() {
+        let path = this.currentQuestion.path
+        if (path)
+          return this.loadImageAsBase64(path)
+        else
+          return ""
       },
       ...mapState({
         genres: state => state.quiz.genres,
@@ -209,6 +248,9 @@
       },
       toggleAutoDisplayMode() {
         this.push("toggleAutoDisplayMode")
+      },
+      toggleImageDisplay() {
+        this.push("toggleImageDisplay")
       }
     }
   }

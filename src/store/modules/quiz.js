@@ -6,6 +6,7 @@ const state = {
   currentGenre: "Genre1",
   viewPhase: "hidden",
   autoDisplay: true,
+  imageDisplay: false,
   cursor: {
     Genre1: 0,
     Genre2: 0,
@@ -58,6 +59,9 @@ const getters = {
   },
   currentQuestion(state) {
     return state.data[state.currentGenre][getters.currentGenreCursor(state)]
+  },
+  currectQuizType(state) {
+    return state.type[state.currentGenre]
   }
 }
 
@@ -103,8 +107,21 @@ const mutations = {
       }
     }
   },
+  loadImageQuizData(state, data) {
+    for (let genre of Object.keys(data)) {
+      Vue.set(state.cursor, genre, 0)
+      Vue.set(state.type, genre, "image")
+      Vue.set(state.data, genre, data[genre])
+      if (state.genres.findIndex((g) => g === genre) < 0) {
+        state.genres.push(genre)
+      }
+    }
+  },
   toggleAutoDisplayMode(state) {
     state.autoDisplay = !state.autoDisplay
+  },
+  toggleImageDisplay(state) {
+    state.imageDisplay = !state.imageDisplay
   }
 }
 
