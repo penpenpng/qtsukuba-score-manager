@@ -5,6 +5,7 @@ import {
   resolveSlash,
   updateRank,
 } from "./ruleLogic"
+import QuizModule from "./modules/quiz"
 import Vue from "vue"
 
 const state = {
@@ -92,6 +93,11 @@ const mutations = {
     resolveSlash(state.ruleKey, state)
     updateRank(state.ruleKey, state)
     mutations.resetSelections(state)
+
+    if (state.quiz.autoDisplay) {
+      QuizModule.mutations.nextCursor(state.quiz)
+      QuizModule.mutations.changeViewPhase(state.quiz, "showAll")
+    }
   },
   resetSelections(state) {
     state.slasherId = null

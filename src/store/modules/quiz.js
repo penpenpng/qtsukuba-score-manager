@@ -5,6 +5,7 @@ const state = {
   genres: ["Genre1", "Genre2"],
   currentGenre: "Genre1",
   viewPhase: "hidden",
+  autoDisplay: true,
   cursor: {
     Genre1: 0,
     Genre2: 0,
@@ -65,17 +66,23 @@ const mutations = {
     state.currentGenre = genre
   },
   nextCursor(state) {
-    if (state.cursor[state.currentGenre] + 1 < getters.currentGenreLength(state))
+    if (state.cursor[state.currentGenre] + 1 < getters.currentGenreLength(state)) {
       state.cursor[state.currentGenre]++
+      mutations.changeViewPhase(state, "hidden")
+    }
   },
   prevCursor(state) {
-    if (state.cursor[state.currentGenre] > 0)
+    if (state.cursor[state.currentGenre] > 0) {
       state.cursor[state.currentGenre]--
+      mutations.changeViewPhase(state, "hidden")
+    }
   },
   jumpCursor(state, index) {
     index = +index
-    if (0 <= index && index < getters.currentGenreLength(state))
+    if (0 <= index && index < getters.currentGenreLength(state)) {
       state.cursor[state.currentGenre] = index
+      mutations.changeViewPhase(state, "hidden")
+    }
   },
   changeViewPhase(state, phase) {
     if (
@@ -95,6 +102,9 @@ const mutations = {
         state.genres.push(genre)
       }
     }
+  },
+  toggleAutoDisplayMode(state) {
+    state.autoDisplay = !state.autoDisplay
   }
 }
 

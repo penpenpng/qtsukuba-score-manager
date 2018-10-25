@@ -1,5 +1,6 @@
 <template>
   <section class="quiz-control">
+    <h2>クイズ選択</h2>
     <label>
       表示中のジャンル: 
       <select v-model="currentGenre">
@@ -10,8 +11,6 @@
       </select>
     </label>
     <base-button @click.native="selectAndReadCsv">csvから読み込み</base-button>
-    
-    <h2>クイズ一覧</h2>
     <table class="quiz-table">
       <thead>
         <tr>
@@ -26,22 +25,32 @@
           :key="currentGenre + index"
           :class="{ selected: currentGenreCursor == index }"
           @click="jumpCursor(index)">
-          <td>{{ index + 1 }}</td>
+          <td>{{ index }}</td>
           <td>{{ row.q }}</td>
           <td>{{ row.a }}</td>
         </tr>
       </tbody>
     </table>
 
+    <h2>表示状態変更</h2>
+    <label class="block">
+      <input type="checkbox" :checked="autoDisplay" @input="toggleAutoDisplayMode">
+      スコア処理時に次の問題と答えを表示する
+    </label>
+    <base-button @click.native="hideAll">すべて隠す</base-button>
+    <base-button @click.native="showQuestion">問題文だけ表示</base-button>
+    <base-button @click.native="showAll">すべて表示する</base-button>
+
     <h2>プレビュー</h2>
     <div class="preview">
-      <div class="no">No. {{ currentGenreCursor + 1}}</div>
-      <div class="question" :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
-      <div class="answer" :class="{ hidden: viewPhase !== 'showAll'}">{{ currentQuestion.a }}</div>
+      <div class="no">hogehoge~</div>
+      <div
+        class="question"
+        :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
+      <div
+        class="answer"
+        :class="{ hidden: viewPhase !== 'showAll'}">A. {{ currentQuestion.a }}</div>
     </div>
-    <base-button @click.native="hideAll">Hide All</base-button>
-    <base-button @click.native="showQuestion">Show Question</base-button>
-    <base-button @click.native="showAll">Show All</base-button>
   </section>
 </template>
 
@@ -50,6 +59,7 @@
     width: 100%;
     max-height: 800px;
     table-layout: fixed;
+    box-shadow: 0 0 2px 0px gray;
     border: 1px solid;
     border-collapse: collapse;
     overflow-y: scroll;
@@ -97,10 +107,38 @@
     }
   }
 
+  .block {
+    display: block;
+  }
+
   .preview {
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 2px 0px gray;
+
+    .no {
+      padding: 5px;
+    }
+
+    .question {
+      height: 4em;
+      padding: 5px;
+      border-top: solid 0.5px darkgray;
+      border-bottom: solid 0.5px darkgray;
+      overflow-wrap: break-word;
+      text-overflow: ellipsis;
+    }
+
+    .answer {
+      padding: 5px;
+      padding-right: 15px;
+      text-align: right;
+      text-overflow: ellipsis;
+    }
+
     .hidden {
-      background: dimgray;
-      color: white;
+      background: gainsboro;
+      // color: white;
     }
   }
 </style>
@@ -122,8 +160,9 @@
         },
       },
       ...mapState({
-        genres: (state) => state.quiz.genres,
-        viewPhase: (state) => state.quiz.viewPhase,
+        genres: state => state.quiz.genres,
+        viewPhase: state => state.quiz.viewPhase,
+        autoDisplay: state => state.quiz.autoDisplay,
       }),
       ...mapGetters([
         "currentGenreData",
@@ -143,6 +182,9 @@
       },
       showAll() {
         this.push("changeViewPhase", "showAll")
+      },
+      toggleAutoDisplayMode() {
+        this.push("toggleAutoDisplayMode")
       }
     }
   }

@@ -4,10 +4,10 @@
       <div class="header">
         hogehoge~
       </div>
-      <div class="question">
+      <div class="question" :class="{ hidden: viewPhase === 'hidden' }">
         {{ currentQuestion.q }}
       </div>
-      <div class="answer">
+      <div class="answer" :class="{ hidden: viewPhase !== 'showAll' }">
         A. {{ currentQuestion.a }}
       </div>
     </div>
@@ -31,11 +31,15 @@
       grid-template-columns: 100%;
       padding: 5px;
 
+      .hidden {
+        color: transparent;
+      }
+
       .question {
         font-size: 1.5rem;
         padding: 5px;
         border-top: solid 0.5px darkgray;
-        border-bottom: solid 0.5px rgb(54, 10, 10);
+        border-bottom: solid 0.5px darkgray;
         overflow-wrap: break-word;
         text-overflow: ellipsis;
       }
@@ -60,7 +64,7 @@
   export default {
     computed: {
       ...mapState({
-
+        viewPhase: state => state.quiz.viewPhase,
       }),
       ...mapGetters([
         "currentQuestion",

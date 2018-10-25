@@ -83,7 +83,10 @@ function main() {
         continue
       }
 
-      let list = []
+      let list = [{
+        q: "(この問題はダミーです)",
+        a: "",
+      }]
       try {
         const csv = parseCsv(content)
         for (let row of csv)
@@ -96,7 +99,7 @@ function main() {
         continue
       }
 
-      if (list.length <= 0) {
+      if (list.length <= 1) {
         messages.push(`[ERROR] ${base}は空です`)
         continue
       }
