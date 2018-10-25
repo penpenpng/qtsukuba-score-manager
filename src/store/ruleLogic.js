@@ -93,7 +93,7 @@ export function updateRank(ruleKey, vuexState) {
   let newWinners = []
   for (let playerId of Object.keys(vuexState.players)) {
     let decision = RuleHash[ruleKey].makeDecision(
-      convertToLogicArg(vuexState).players[playerId].score,
+      convertToLogicArg(vuexState).players[playerId],
       convertToLogicArg(vuexState)
     )
     if (decision !== "win" && decision !== "lose" && decision !== "none")
@@ -184,9 +184,14 @@ const CyanaTennis = {
     }
   },
 
-  makeDecision(score) {
-    if (score.point.value > 4) return "win"
-    return "none"
+  makeDecision(player, state) {
+    let point = player.score.point.value 
+    if (point < 8) return "none"
+    for (let p of Object.values(state.players)) {
+      if (player.id != p.id && point - p.score.point.value < 2)
+        return "none"
+    }
+    return "win"
   },
 
   resolveSlash(state) {
