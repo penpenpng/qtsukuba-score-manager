@@ -1,9 +1,6 @@
 <template>
   <div class="quiz-view-wrapper">
     <div class="quiz-view">
-      <div class="quiz-view-row" :class="{ hidden: viewPhase === 'hidden' }">
-        Q. {{ questionNo }}
-      </div>
       <div class="quiz-view-row question" :class="{ hidden: viewPhase === 'hidden' }">
         {{ currentQuestion.q }}
       </div>
@@ -27,7 +24,7 @@
       width: 75%;
       height: 90%;
       display: grid;
-      grid-template-rows: auto 1fr auto;
+      grid-template-rows: 1fr auto;
       grid-template-columns: 100%;
       padding: 5px;
 
@@ -43,7 +40,6 @@
 
       .question {
         padding: 5px 30px;
-        border-top: solid 0.5px darkgray;
         border-bottom: solid 0.5px darkgray;
         overflow-wrap: break-word;
       }

@@ -50,7 +50,6 @@
     <h2>プレビュー</h2>
     <div class="preview">
       <div class="sentence-preview">
-        <div class="no">Q. {{ questionNo }}</div>
         <div
           class="question"
           :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
@@ -161,14 +160,9 @@
     flex-direction: column;
     box-shadow: 0 0 2px 0px gray;
 
-    .no {
-      padding: 5px;
-    }
-
     .question {
       height: 4em;
       padding: 5px;
-      border-top: solid 0.5px darkgray;
       border-bottom: solid 0.5px darkgray;
       overflow-wrap: break-word;
       text-overflow: ellipsis;
