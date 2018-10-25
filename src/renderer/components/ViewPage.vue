@@ -50,6 +50,12 @@
   }
 </style>
 
+<style>
+  .view-page * {
+    user-select: none;
+  }
+</style>
+
 <script>
   import { mapState } from "vuex"
   import PlayerView from "./ViewPage/PlayerView.vue"
