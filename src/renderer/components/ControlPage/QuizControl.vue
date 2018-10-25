@@ -47,7 +47,7 @@
 
     <h2>プレビュー</h2>
     <div class="preview">
-      <div class="no">hogehoge~</div>
+      <div class="no">Q. {{ questionNo }}</div>
       <div
         class="question"
         :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
@@ -186,6 +186,7 @@
         genres: state => state.quiz.genres,
         viewPhase: state => state.quiz.viewPhase,
         autoDisplay: state => state.quiz.autoDisplay,
+        questionNo: state => state.questionNo,
       }),
       ...mapGetters([
         "currentGenreData",

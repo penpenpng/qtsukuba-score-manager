@@ -1,13 +1,13 @@
 <template>
   <div class="quiz-view-wrapper">
     <div class="quiz-view">
-      <div class="header">
-        hogehoge~
+      <div class="quiz-view-row" :class="{ hidden: viewPhase === 'hidden' }">
+        Q. {{ questionNo }}
       </div>
-      <div class="question" :class="{ hidden: viewPhase === 'hidden' }">
+      <div class="quiz-view-row question" :class="{ hidden: viewPhase === 'hidden' }">
         {{ currentQuestion.q }}
       </div>
-      <div class="answer" :class="{ hidden: viewPhase !== 'showAll' }">
+      <div class="quiz-view-row answer" :class="{ hidden: viewPhase !== 'showAll' }">
         A. {{ currentQuestion.a }}
       </div>
     </div>
@@ -35,21 +35,21 @@
         color: transparent;
       }
 
-      .question {
+      .quiz-view-row {
         font-size: 1.5rem;
-        padding: 5px;
-        border-top: solid 0.5px darkgray;
-        border-bottom: solid 0.5px darkgray;
-        overflow-wrap: break-word;
+        padding: 5px 15px;
         text-overflow: ellipsis;
       }
 
+      .question {
+        padding: 5px 30px;
+        border-top: solid 0.5px darkgray;
+        border-bottom: solid 0.5px darkgray;
+        overflow-wrap: break-word;
+      }
+
       .answer {
-        font-size: 1.5rem;
         text-align: right;
-        padding: 5px;
-        padding-right: 15px;
-        text-overflow: ellipsis;
       }
     }
   }
@@ -65,6 +65,7 @@
     computed: {
       ...mapState({
         viewPhase: state => state.quiz.viewPhase,
+        questionNo: state => state.questionNo,
       }),
       ...mapGetters([
         "currentQuestion",

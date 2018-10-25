@@ -22,6 +22,7 @@ const state = {
   ],
   ruleKey: "",
   scoreDefinitions: [],
+  questionNo: 0,
   slasherId: null,
   correctlyAnswererIds: [],
   nextPlayerId: "1",
@@ -37,6 +38,7 @@ const mutations = {
   },
   setRule(state, ruleKey) {
     state.ruleKey = ruleKey
+    state.questionNo = 0
     state.correctlyAnswererIds.splice(0, state.correctlyAnswererIds.length)
     state.slasherId = null
     state.scoreDefinitions = getScoreDefinitions(ruleKey)
@@ -90,6 +92,7 @@ const mutations = {
     state.correctlyAnswererIds = correctlyAnswererIds.map((i) => "" + i)
   },
   resolveSlash(state) {
+    state.questionNo++
     resolveSlash(state.ruleKey, state)
     updateRank(state.ruleKey, state)
     mutations.resetSelections(state)
