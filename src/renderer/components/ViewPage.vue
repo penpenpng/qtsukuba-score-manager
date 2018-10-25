@@ -9,7 +9,7 @@
         :player-no="no + 1"></player-view>
     </div>
     <div class="footer">
-     <quiz-view></quiz-view> 
+      <quiz-view></quiz-view> 
     </div>
   </div>
 </template>
