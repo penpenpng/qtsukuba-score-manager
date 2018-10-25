@@ -97,7 +97,7 @@ const mutations = {
     updateRank(state.ruleKey, state)
     mutations.resetSelections(state)
 
-    if (state.quiz.autoDisplay) {
+    if (state.quiz.autoDisplay && QuizModule.getters.currectQuizType(state.quiz) !== "image") {
       QuizModule.mutations.nextCursor(state.quiz)
       QuizModule.mutations.changeViewPhase(state.quiz, "showAll")
     }

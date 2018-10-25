@@ -36,15 +36,15 @@
     </table>
 
     <h2>表示状態変更</h2>
-    <label class="auto-display-control">
+    <label class="auto-display-control" v-show="currectQuizType !== 'image'">
       <input type="checkbox" :checked="autoDisplay" @input="toggleAutoDisplayMode">
       スコア処理時に次の問題と答えを表示する
     </label>
     <div class="view-state-control">
       <base-button class="button" @click.native="hideAll">すべて隠す</base-button>
       <base-button class="button" @click.native="showQuestion">問題文だけ表示</base-button>
-      <base-button class="button" @click.native="showAll">すべて表示する</base-button>
-      <base-button class="button image-button" @click.native="toggleImageDisplay">画像を表示する/隠す</base-button>
+      <base-button v-if="currectQuizType === 'image'" class="button image-button" @click.native="toggleImageDisplay">画像を表示する/隠す</base-button>
+      <base-button class="button" @click.native="showAll">問題文と答えを表示する</base-button>
     </div>
 
     <h2>プレビュー</h2>
@@ -58,7 +58,7 @@
           class="answer"
           :class="{ hidden: viewPhase !== 'showAll'}">A. {{ currentQuestion.a }}</div>
       </div>
-      <div class="image-preview">
+      <div class="image-preview" :class="{ hidden: !imageDisplay }">
         <img :src="src">
       </div>
     </div>
@@ -150,6 +150,10 @@
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 70% 30%;
+
+    .hidden {
+      background: gainsboro;
+    }
   }
 
   .sentence-preview {
@@ -175,10 +179,6 @@
       padding-right: 15px;
       text-align: right;
       text-overflow: ellipsis;
-    }
-
-    .hidden {
-      background: gainsboro;
     }
   }
 
@@ -226,11 +226,13 @@
         viewPhase: state => state.quiz.viewPhase,
         autoDisplay: state => state.quiz.autoDisplay,
         questionNo: state => state.questionNo,
+        imageDisplay: state => state.quiz.imageDisplay,
       }),
       ...mapGetters([
         "currentGenreData",
         "currentGenreCursor",
         "currentQuestion",
+        "currectQuizType",
       ])
     },
     methods: {

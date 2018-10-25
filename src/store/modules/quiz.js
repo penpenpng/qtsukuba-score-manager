@@ -68,17 +68,21 @@ const getters = {
 const mutations = {
   changeGenre(state, genre) {
     state.currentGenre = genre
+    mutations.changeViewPhase(state, "hidden")
+    mutations.hideImage(state)
   },
   nextCursor(state) {
     if (state.cursor[state.currentGenre] + 1 < getters.currentGenreLength(state)) {
       state.cursor[state.currentGenre]++
       mutations.changeViewPhase(state, "hidden")
+      mutations.hideImage(state)
     }
   },
   prevCursor(state) {
     if (state.cursor[state.currentGenre] > 0) {
       state.cursor[state.currentGenre]--
       mutations.changeViewPhase(state, "hidden")
+      mutations.hideImage(state)
     }
   },
   jumpCursor(state, index) {
@@ -86,6 +90,7 @@ const mutations = {
     if (0 <= index && index < getters.currentGenreLength(state)) {
       state.cursor[state.currentGenre] = index
       mutations.changeViewPhase(state, "hidden")
+      mutations.hideImage(state)
     }
   },
   changeViewPhase(state, phase) {
@@ -96,6 +101,9 @@ const mutations = {
     ) throw new Error("Invalid argument")
     
     state.viewPhase = phase
+
+    if (phase === "hidden" || phase === "qOnly") 
+      mutations.hideImage(state)
   },
   loadNormalQuizData(state, data) {
     for (let genre of Object.keys(data)) {
@@ -122,6 +130,12 @@ const mutations = {
   },
   toggleImageDisplay(state) {
     state.imageDisplay = !state.imageDisplay
+  },
+  hideImage(state) {
+    state.imageDisplay = false
+  },
+  showImage(state) {
+    state.imageDisplay = true
   }
 }
 
