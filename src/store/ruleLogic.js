@@ -24,6 +24,7 @@ export function createInitialScore(ruleKey) {
     score[scoreKey] = {
       value: definiton.properties[scoreKey].initialValue,
       reach: false,
+      animating: false,
     }
   }
   return score
@@ -69,8 +70,10 @@ export function resolveSlash(ruleKey, vuexState) {
       if (!(sk in p.score))
         continue
       
-      if (Number.isInteger(p.score[sk].value))
+      if (Number.isInteger(p.score[sk].value)) {
+        vuexPlayerState.score[sk].animating = vuexPlayerState.score[sk].value != p.score[sk].value
         vuexPlayerState.score[sk].value = +p.score[sk].value
+      }
       if (typeof (p.score[sk].reach) === "boolean")
         vuexPlayerState.score[sk].reach = !!p.score[sk].reach
     }

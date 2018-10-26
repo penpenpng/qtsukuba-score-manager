@@ -105,6 +105,9 @@ const mutations = {
   resetSelections(state) {
     state.slasherId = null
     state.correctlyAnswererIds = []
+  },
+  endAnimating(state, { playerId, scoreKey }) {
+    state.players[playerId].score[scoreKey].animating = false    
   }
 }
 

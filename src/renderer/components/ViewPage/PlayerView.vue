@@ -7,8 +7,11 @@
         v-for="scoreKey in Object.keys(player.score)"
         :key="scoreKey"
         class="score-wrapper">
-        <div class="score">
-          {{ player.score[scoreKey].value }}
+        <div
+          class="score"
+          :class="{'animated flip': player.score[scoreKey].animating }"
+          @animationend="endAnimating(playerId, scoreKey)">
+          <span>{{ player.score[scoreKey].value }}</span>
         </div>
       </div>
     </div>
@@ -103,8 +106,13 @@
         return this.rank !== "---"
       },
       ...mapState({
-        scoreDefinitions: (state) => state.scoreDefinitions,
+        scoreDefinitions: state => state.scoreDefinitions,
       })
+    },
+    methods: {
+      endAnimating(playerId, scoreKey) {
+        this.push("endAnimating", {playerId, scoreKey})
+      }
     }
   }
 </script>

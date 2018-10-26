@@ -1,4 +1,5 @@
 import Vue from "vue"
+import "animate.css/animate.css"
 import upperFirst from "lodash/upperFirst"
 import camelCase from "lodash/camelCase"
 import axios from "axios"
