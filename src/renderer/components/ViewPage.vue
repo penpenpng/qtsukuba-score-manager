@@ -3,11 +3,16 @@
     <div class="header">{{ title }}</div>
     <div class="body">
       <image-view class="image-view" v-if="imageDisplay"></image-view>
-      <player-view
+      <div
         v-for="(playerId, no) in playerOrder"
-        :key="playerId"
-        :player-id="playerId"
-        :player-no="no + 1"></player-view>
+        :key="playerId">
+        <transition appear
+          enter-active-class="animated flipInY">
+          <player-view
+            :player-id="playerId"
+            :player-no="no + 1"></player-view>
+        </transition>
+      </div>
     </div>
     <div class="footer">
       <quiz-view></quiz-view> 
