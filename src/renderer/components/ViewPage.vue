@@ -3,12 +3,13 @@
     <div class="header">{{ title }}</div>
     <div class="body">
       <image-view class="image-view" v-if="imageDisplay"></image-view>
-      <div
+      <div 
         v-for="(playerId, no) in playerOrder"
         :key="playerId">
         <transition appear
           enter-active-class="animated flipInY">
           <player-view
+            class="player-view-template"
             :player-id="playerId"
             :player-no="no + 1"></player-view>
         </transition>
@@ -43,6 +44,10 @@
       justify-content: space-around;
       padding: 15px;
       position: relative;
+
+      .player-view-template {
+        height: 100%;
+      }
 
       .image-view {
         position: absolute;
