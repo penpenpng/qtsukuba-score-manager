@@ -13,6 +13,7 @@
           :value="option.key">{{ option.label }}</option>
       </select>
     </label>
+    <base-button @click.native="toggleViewVisibility">得点表示画面を描画する/隠す</base-button>
 
     <h1>プレイヤー/スコア管理</h1>
     <players-control class="control-section"></players-control>
@@ -88,5 +89,10 @@
         ruleOptions: state => state.ruleOptions,
       })
     },
+    methods: {
+      toggleViewVisibility() {
+        this.push("toggleViewVisibility")
+      }
+    }
   }
 </script>

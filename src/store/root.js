@@ -29,10 +29,11 @@ const state = {
   playerOrder: [],
   players: {},
   ranking: [],
+  viewVisibility: false,
 }
 
 const mutations = {
-  // Logic Setup
+  // Setup
   updateTitle(state, title) {
     state.title = title
   },
@@ -47,6 +48,9 @@ const mutations = {
     for (let playerState of Object.values(state.players))
       playerState.score = createInitialScore(ruleKey)
     updateRank(state.ruleKey, state)
+  },
+  toggleViewVisibility(state) {
+    state.viewVisibility = !state.viewVisibility
   },
 
   // Player Management

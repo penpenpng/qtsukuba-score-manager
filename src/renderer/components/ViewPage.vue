@@ -1,7 +1,7 @@
 <template>
   <div class="view-page">
     <div class="header">{{ title }}</div>
-    <div class="body">
+    <div class="body" v-if="viewVisibility">
       <image-view class="image-view" v-if="imageDisplay"></image-view>
       <div 
         v-for="(playerId, no) in playerOrder"
@@ -15,7 +15,7 @@
         </transition>
       </div>
     </div>
-    <div class="footer">
+    <div class="footer" v-if="viewVisibility">
       <quiz-view></quiz-view> 
     </div>
   </div>
@@ -85,6 +85,7 @@
         title: state => state.title,
         playerOrder: state => state.playerOrder,
         imageDisplay: state => state.quiz.imageDisplay,
+        viewVisibility: state => state.viewVisibility,
       })
     },
   }
