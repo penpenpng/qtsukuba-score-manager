@@ -212,6 +212,9 @@ function createControlWindow() {
 
   windows.control.on("closed", () => {
     windows.control = null
+    if (windows.view)
+      windows.view.close()
+    windows.view = null
   })
 }
 
