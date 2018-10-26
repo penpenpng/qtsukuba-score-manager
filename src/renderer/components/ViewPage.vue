@@ -27,6 +27,7 @@
     margin: 0;
     height: 100vh;
     width: 100vw;
+    overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr 30%;
 
@@ -47,6 +48,7 @@
 
       .player-view-template {
         height: 100%;
+        animation-delay: 1s;
       }
 
       .image-view {

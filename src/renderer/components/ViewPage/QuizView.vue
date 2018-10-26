@@ -1,13 +1,16 @@
 <template>
   <div class="quiz-view-wrapper">
-    <div class="quiz-view">
-      <div class="quiz-view-row question" :class="{ hidden: viewPhase === 'hidden' }">
-        {{ currentQuestion.q }}
+    <transition appear
+      enter-active-class="animated fadeInUp">
+      <div class="quiz-view">
+        <div class="quiz-view-row question" :class="{ hidden: viewPhase === 'hidden' }">
+          {{ currentQuestion.q }}
+        </div>
+        <div class="quiz-view-row answer" :class="{ hidden: viewPhase !== 'showAll' }">
+          A. {{ currentQuestion.a }}
+        </div>
       </div>
-      <div class="quiz-view-row answer" :class="{ hidden: viewPhase !== 'showAll' }">
-        A. {{ currentQuestion.a }}
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
