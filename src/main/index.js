@@ -58,9 +58,9 @@ function main() {
   })
 
   ipcMain.on("select-and-read-csv", (e) => {
-    const paths = dialog.showOpenDialog(e.sender, {
+    const paths = dialog.showOpenDialog({
       properties: ["openFile", "multiSelections"],
-      filters: [{name: "csv", extensions: [".csv"]}],
+      filters: [{name: "csv", extensions: ["csv"]}],
     })
 
     if (!paths)
