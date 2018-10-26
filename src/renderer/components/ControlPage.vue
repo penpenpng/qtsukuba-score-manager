@@ -25,6 +25,8 @@
 <style lang="scss" scoped>
   .control-page {
     padding: 20px;
+    margin: 0;
+    width: 100%;
 
     .control-section {
       padding: 15px;
