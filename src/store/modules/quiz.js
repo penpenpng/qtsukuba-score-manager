@@ -1,48 +1,26 @@
 import Vue from "vue"
 
 
+const NO_TARGET = "未選択"
+
 const state = {
-  genres: ["Genre1", "Genre2"],
-  currentGenre: "Genre1",
+  genres: [NO_TARGET],
+  currentGenre: NO_TARGET,
   viewPhase: "hidden",
   autoDisplay: true,
   imageDisplay: false,
   cursor: {
-    Genre1: 0,
-    Genre2: 0,
+    [NO_TARGET]: 0,
   },
   type: {
-    Genre1: "normal",
-    Genre2: "normal",
+    [NO_TARGET]: "normal",
   },
   data: {
-    Genre1: [
+    [NO_TARGET]: [
       {
-        q: "1-1?",
-        a: "1-1!",
-      },
-      {
-        q: "1-2?",
-        a: "1-2!",
-      },
-      {
-        q: "1-2?",
-        a: "1-2!",
-      },
-    ],
-    Genre2: [
-      {
-        q: "2-1?",
-        a: "2-1!",
-      },
-      {
-        q: "2-2?",
-        a: "2-2!",
-      },
-      {
-        q: "2-2?",
-        a: "2-2!",
-      },
+        q: "",
+        a: "",
+      }
     ],
   },
 }
