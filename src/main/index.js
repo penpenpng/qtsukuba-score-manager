@@ -5,6 +5,7 @@ import {
   BrowserWindow,
   ipcMain,
   dialog,
+  Menu,
 } from "electron"
 import {
   readFileSync,
@@ -37,10 +38,6 @@ let windows = {}
 let backup = cloneDeep(store.state)
 
 function main() {
-  app.on("window-all-closed", () => {
-    if (process.platform !== "darwin") app.quit()
-  })
-  
   app.on("activate", () => {
     if (!windows.control) createControlWindow()
   })
@@ -174,11 +171,23 @@ function main() {
   })
 
   createControlWindow()
-  createViewWindow()
+  
+  Menu.setApplicationMenu(Menu.buildFromTemplate([
+    {
+      label: "表示",
+      submenu: [{
+        label: "得点表示ウィンドウ",
+        click: createViewWindow,
+      }]
+    }
+  ]))  
 }
 
 
 function createControlWindow() {
+  if (windows.control)
+    windows.control.close()
+  
   windows.control = new BrowserWindow({
     height: 563,
     useContentSize: true,
@@ -187,6 +196,20 @@ function createControlWindow() {
 
   windows.control.loadURL(winURL)
 
+  windows.control.on("close", (e) => {
+    if (process.platform === "darwin")
+      return
+    
+    let clicked = dialog.showMessageBox({
+      type: "question",
+      title: "確認",
+      message: "アプリケーションを終了しますか？",
+      buttons: ["終了", "キャンセル"],
+    })
+    if (clicked === 1)
+      e.preventDefault()
+  })
+
   windows.control.on("closed", () => {
     windows.control = null
   })
@@ -194,6 +217,9 @@ function createControlWindow() {
 
 
 function createViewWindow() {
+  if (windows.view)
+    windows.view.close()
+
   windows.view = new BrowserWindow({
     height: 563,
     useContentSize: true,
@@ -204,6 +230,7 @@ function createViewWindow() {
 
   windows.view.on("closed", () => {
     windows.view = null
+    if (process.platform !== "darwin") app.quit()
   })
 }
 
