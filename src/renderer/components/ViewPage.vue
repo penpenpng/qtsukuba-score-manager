@@ -45,6 +45,7 @@
       flex-direction: row;
       justify-content: space-around;
       padding: 40px 130px;
+      padding-bottom: 15px;
       position: relative;
       margin-top: 1px;
       border-top: 5px solid #6600CC;
