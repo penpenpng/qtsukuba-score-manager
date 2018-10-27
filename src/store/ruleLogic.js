@@ -123,6 +123,17 @@ export function updateRank(ruleKey, vuexState) {
   }
 }
 
+export function getRuleOptions() {
+  let options = []
+  for (let key of Object.keys(RuleHash)) {
+    options.push({
+      key: key,
+      label: RuleHash[key].name
+    })
+  }
+  return options
+}
+
 function convertToLogicArg(vuexState) {
   let playerRepr = {}
   for (let playerState of Object.values(vuexState.players)) {
@@ -179,7 +190,12 @@ function validate(logicArg) {
     throw new Error("'env' property is not an object")
 }
 
+// function loadLogic(path) {
+
+// }
+
 const SohosaiBoard = {
+  name: "2ndボード",
   scoreDefinitions: {
     order: ["point"],
     properties: {
@@ -227,6 +243,7 @@ const SohosaiBoard = {
 }
 
 const CyanaTennis = {
+  name: "きゃな式テニス",
   scoreDefinitions: {
     order: ["point"],
     properties: {
@@ -264,7 +281,7 @@ const CyanaTennis = {
   },
 }
 
-const RuleHash = {
+let RuleHash = {
   SohosaiBoard,
   CyanaTennis,
 }

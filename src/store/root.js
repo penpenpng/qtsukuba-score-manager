@@ -1,4 +1,5 @@
 import {
+  getRuleOptions,
   getScoreDefinitions,
   createInitialScore,
   removeWinner,
@@ -15,14 +16,7 @@ const state = {
       key: "",
       label: "",
     },
-    {
-      key: "SohosaiBoard",
-      label: "2ndボード",
-    },
-    {
-      key: "CyanaTennis",
-      label: "きゃな式テニス",
-    }
+    ...getRuleOptions()
   ],
   ruleKey: "",
   scoreDefinitions: [],
