@@ -11,8 +11,8 @@
       </select>
     </label>
     <div class="quiz-reader">
-      <base-button class="button" @click.native="selectAndReadCsv">csvから読み込み</base-button>
-      <base-button class="button" @click.native="selectAndReadImgdir">画像フォルダから読み込み</base-button>
+      <base-button class="button" @click.native="selectAndReadCsv">csvから読み込む</base-button>
+      <base-button class="button" @click.native="selectAndReadImgdir">画像フォルダから読み込む</base-button>
     </div>
     <table class="quiz-table">
       <thead>
@@ -38,13 +38,13 @@
     <h2>表示状態変更</h2>
     <label class="auto-display-control" v-show="currectQuizType !== 'image'">
       <input type="checkbox" :checked="autoDisplay" @input="toggleAutoDisplayMode">
-      スコア処理時に次の問題と答えを表示する
+      スコア処理時に次の問題と答えを自動表示
     </label>
     <div class="view-state-control">
       <base-button class="button" @click.native="hideAll">すべて隠す</base-button>
       <base-button class="button" @click.native="showQuestion">問題文だけ表示</base-button>
-      <base-button v-if="currectQuizType === 'image'" class="button image-button" @click.native="toggleImageDisplay">画像を表示する/隠す</base-button>
-      <base-button class="button" @click.native="showAll">問題文と答えを表示する</base-button>
+      <base-button v-if="currectQuizType === 'image'" class="button image-button" @click.native="toggleImageDisplay">画像を表示/隠す</base-button>
+      <base-button class="button" @click.native="showAll">問題文と答えを表示</base-button>
     </div>
 
     <h2>プレビュー</h2>
