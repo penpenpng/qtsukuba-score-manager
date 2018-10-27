@@ -41,11 +41,7 @@ function main() {
 
   ipcMain.on("push", (e, t, p) => commit(t, p))
   
-  ipcMain.on("fetch", () => {
-    store.replaceState(backup)
-    for (let w of Object.values(windows)) if (w)
-      w.webContents.send("initialize", backup)
-  })
+  ipcMain.on("fetch", sync)
 
   ipcMain.on("open-view-page", () => {
     if (!windows.view) createViewWindow()
@@ -175,9 +171,23 @@ function main() {
       submenu: [{
         label: "得点表示ウィンドウ",
         click: createViewWindow,
-      }]
+      }],      
+    },
+    {
+      label: "制御",
+      submenu: [{
+        label: "1つ前のスコア処理をキャンセルする",
+        click: sync,
+      }],
     }
   ]))  
+}
+
+
+function sync() {
+  store.replaceState(backup)
+  for (let w of Object.values(windows)) if (w)
+    w.webContents.send("initialize", backup)
 }
 
 

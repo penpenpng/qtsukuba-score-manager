@@ -14,10 +14,7 @@
         class="button execute-button">スコア処理</base-button>
       <base-button
         @click.native="reset"
-        class="button">リセット</base-button>
-      <base-button
-        @click.native="redo"
-        class="button">スコア処理をキャンセルする</base-button>
+        class="button">選択状態を解除</base-button>
     </div>
   </div>
 </template>
@@ -49,7 +46,6 @@
 
 
 <script>
-  import { ipcRenderer } from "electron"
   import { mapState } from "vuex"
   import PlayerControl from "./PlayerControl.vue"
 
@@ -68,9 +64,6 @@
       },
       resolveSlash() {
         this.push("resolveSlash")
-      },
-      redo() {
-        ipcRenderer.send("fetch")
       },
       reset() {
         this.push("resetSelections")
