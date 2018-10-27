@@ -39,7 +39,7 @@
   }
 
   .player-view {
-    width: 80px;
+    width: 100px;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
@@ -53,17 +53,18 @@
     }
 
     .name {
-      padding-top: 10px;
       writing-mode: vertical-rl;
+      text-align: center;
       justify-self: center;
       font-size: 3rem;
+      padding: 10px;
     }
 
     .score-wrapper {
       display: flex;
       justify-content: center;
       align-items: center;
-      background: lightblue;
+      background: #dad5d1;
 
       .score {
         font-size: 4rem;

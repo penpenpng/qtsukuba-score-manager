@@ -24,12 +24,14 @@
     
     .quiz-view {
       box-shadow: 0 0 2px 0px darkgrey;
-      width: 75%;
+      width: 60%;
+      min-width: 800px;
       height: 90%;
       display: grid;
       grid-template-rows: 1fr auto;
       grid-template-columns: 100%;
       padding: 5px;
+      margin-bottom: 20px;
 
       .hidden {
         color: transparent;

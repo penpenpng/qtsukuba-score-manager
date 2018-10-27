@@ -32,7 +32,7 @@
     grid-template-rows: auto 1fr 30%;
 
     .header {
-      background: purple;
+      background: #6600CC;
       color: white;
       font-size: 3rem;
       padding: 3px;
@@ -43,8 +43,10 @@
       display: flex;
       flex-direction: row;
       justify-content: space-around;
-      padding: 15px;
+      padding: 40px 130px;
       position: relative;
+      margin-top: 1px;
+      border-top: 5px solid #6600CC;
 
       .player-view-template {
         height: 100%;
@@ -58,6 +60,11 @@
         top: 10%;
         left: 10%;
       }
+    }
+
+    .footer {
+      border-bottom: solid 5px #6600CC;
+      margin-bottom: 10px;
     }
   }
 </style>
