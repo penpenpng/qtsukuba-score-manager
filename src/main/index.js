@@ -29,13 +29,10 @@ if (process.env.NODE_ENV !== "development") {
 }
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = true
 
-const winURL = process.env.NODE_ENV === "development"
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
-
 
 let windows = {}
 let backup = cloneDeep(store.state)
+
 
 function main() {
   app.on("activate", () => {
@@ -194,7 +191,7 @@ function createControlWindow() {
     width: 1000,
   })
 
-  windows.control.loadURL(winURL)
+  windows.control.loadURL(url(""))
 
   windows.control.on("close", (e) => {
     if (process.platform === "darwin")
@@ -229,7 +226,7 @@ function createViewWindow() {
     width: 1000,
   })
 
-  windows.view.loadURL(winURL + "/#/view")
+  windows.view.loadURL(url("view"))
 
   windows.view.on("closed", () => {
     windows.view = null
@@ -251,6 +248,15 @@ function commit(e, type, payload) {
   for (let w of Object.values(windows)) if (w)
     w.webContents.send("postback", type, payload)
   store.commit(type, payload)
+}
+
+
+function url(path) {
+  if (process.env.NODE_ENV === "development") {
+    return `http://localhost:9080/#/${path}`
+  } else {
+    return `file://${__dirname}/index.html#${path}`
+  }
 }
 
   
