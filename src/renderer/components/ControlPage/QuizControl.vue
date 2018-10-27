@@ -36,14 +36,14 @@
     </table>
 
     <h2>表示状態変更</h2>
-    <label class="auto-display-control" v-show="currectQuizType !== 'image'">
+    <label class="auto-display-control" v-show="currentQuizType !== 'image'">
       <input type="checkbox" :checked="autoDisplay" @input="toggleAutoDisplayMode">
       スコア処理時に次の問題と答えを自動表示
     </label>
     <div class="view-state-control">
       <base-button class="button" @click.native="hideAll">すべて隠す</base-button>
       <base-button class="button" @click.native="showQuestion">問題文だけ表示</base-button>
-      <base-button v-if="currectQuizType === 'image'" class="button image-button" @click.native="toggleImageDisplay">画像を表示/隠す</base-button>
+      <base-button v-if="currentQuizType === 'image'" class="button image-button" @click.native="toggleImageDisplay">画像を表示/隠す</base-button>
       <base-button class="button" @click.native="showAll">問題文と答えを表示</base-button>
     </div>
 
@@ -226,7 +226,7 @@
         "currentGenreData",
         "currentGenreCursor",
         "currentQuestion",
-        "currectQuizType",
+        "currentQuizType",
       ])
     },
     methods: {

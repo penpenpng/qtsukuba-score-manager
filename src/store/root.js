@@ -16,6 +16,10 @@ const state = {
       label: "",
     },
     {
+      key: "SohosaiBoard",
+      label: "2ndボード",
+    },
+    {
       key: "CyanaTennis",
       label: "きゃな式テニス",
     }
@@ -108,7 +112,7 @@ const mutations = {
     updateRank(state.ruleKey, state)
     mutations.resetSelections(state)
 
-    if (state.quiz.autoDisplay && QuizModule.getters.currectQuizType(state.quiz) !== "image") {
+    if (state.quiz.autoDisplay && QuizModule.getters.currentQuizType(state.quiz) !== "image") {
       QuizModule.mutations.nextCursor(state.quiz)
       QuizModule.mutations.changeViewPhase(state.quiz, "showAll")
     }

@@ -1,3 +1,5 @@
+import QuizModule from "./modules/quiz"
+
 
 export function getScoreDefinitions(ruleKey) {
   if (ruleKey === "") { 
@@ -151,7 +153,10 @@ function convertToLogicArg(vuexState) {
 
   let repr = {
     players: playerRepr,
-    env: {},
+    env: {
+      get questionNo() { return vuexState.questionState },
+      get quizType() { return QuizModule.getters.currentQuizType(vuexState.quiz) },
+    },
     get isThrough() { return vuexState.slasherId === null },
     get slasher() {
       if (repr.isThrough)
@@ -172,6 +177,53 @@ function validate(logicArg) {
     throw new Error("State doesn't have 'env' property")
   if (typeof (logicArg.env) !== "object")
     throw new Error("'env' property is not an object")
+}
+
+const SohosaiBoard = {
+  scoreDefinitions: {
+    order: ["point"],
+    properties: {
+      point: {
+        initialValue: 0,
+        visible: true,
+        view: "normal",
+        color: "",
+      },
+    }
+  },
+
+  makeDecision() {
+    return "none"
+  },
+
+  resolveSlash(state) {
+    if (state.env.quizType == "image") {
+      // ビジュアルボード
+      for (let player of Object.values(state.players)) {
+        if (player.correct) {
+          player.score.point.value += 1
+        }
+      }
+    } else {
+      // 早押しボード
+      for (let player of Object.values(state.players)) {
+        if (player.correct) {
+          if (player.slash) {
+            // 押して正解
+            player.score.point.value += 2
+          } else {
+            // 押さずに正解
+            player.score.point.value += 1
+          }
+        } else {
+          if (player.slash) {
+            // 押して誤答
+            player.score.point.value -= 1
+          }
+        }
+      }
+    }
+  },
 }
 
 const CyanaTennis = {
@@ -213,5 +265,6 @@ const CyanaTennis = {
 }
 
 const RuleHash = {
-  CyanaTennis
+  SohosaiBoard,
+  CyanaTennis,
 }

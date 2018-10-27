@@ -38,7 +38,7 @@ const getters = {
   currentQuestion(state) {
     return state.data[state.currentGenre][getters.currentGenreCursor(state)]
   },
-  currectQuizType(state) {
+  currentQuizType(state) {
     return state.type[state.currentGenre]
   }
 }
