@@ -234,6 +234,7 @@ function createViewWindow() {
     height: 563,
     useContentSize: true,
     width: 1000,
+    autoHideMenuBar: true,
   })
 
   windows.view.loadURL(url("view"))
