@@ -13,7 +13,12 @@
           :value="option.key">{{ option.label }}</option>
       </select>
     </label>
-    <base-button @click.native="toggleViewVisibility">得点表示画面を描画する/隠す</base-button>
+    <base-button
+      v-show="viewPageShown"
+      @click.native="toggleViewVisibility"
+      :class="{'show-button': !viewVisibility}">
+      得点表示画面を{{viewVisibility ? "隠す" : "描画する"}}
+    </base-button>
 
     <h1>プレイヤー/スコア管理</h1>
     <players-control class="control-section"></players-control>
@@ -24,10 +29,19 @@
 </template>
 
 <style lang="scss" scoped>
+  @keyframes blink-button {
+    0% {opacity: 0.5;}
+    100% {opacity: 1;}
+  }
   .control-page {
     padding: 20px;
     margin: 0;
     width: 100%;
+
+    .show-button {
+      animation: blink-button ease-in-out 1s infinite alternate;
+      background: orangered;
+    }
 
     .control-section {
       padding: 15px;
@@ -86,6 +100,8 @@
         }
       },
       ...mapState({
+        viewPageShown: state => state.viewPageShown,
+        viewVisibility: state => state.viewVisibility,
         ruleOptions: state => state.ruleOptions,
       })
     },

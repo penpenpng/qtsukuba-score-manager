@@ -29,6 +29,7 @@ const state = {
   playerOrder: [],
   players: {},
   ranking: [],
+  viewPageShown: false,
   viewVisibility: false,
 }
 
@@ -48,6 +49,12 @@ const mutations = {
     for (let playerState of Object.values(state.players))
       playerState.score = createInitialScore(ruleKey)
     updateRank(state.ruleKey, state)
+  },
+  showViewPage(state) {
+    state.viewPageShown = true
+  },
+  hideViewPage(state) {
+    state.viewPageShown = false
   },
   toggleViewVisibility(state) {
     state.viewVisibility = !state.viewVisibility

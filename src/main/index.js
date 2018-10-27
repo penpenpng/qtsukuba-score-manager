@@ -39,7 +39,7 @@ function main() {
     if (!windows.control) createControlWindow()
   })
 
-  ipcMain.on("push", commit)
+  ipcMain.on("push", (e, t, p) => commit(t, p))
   
   ipcMain.on("fetch", () => {
     store.replaceState(backup)
@@ -111,7 +111,7 @@ function main() {
     }
 
     if (data)
-      commit("postback", "loadNormalQuizData", data)
+      commit("loadNormalQuizData", data)
     if (messages)
       sendNotice(e.sender, messages.join("\n"))
   })
@@ -162,7 +162,7 @@ function main() {
     }
 
     if (data)
-      commit("postback", "loadImageQuizData", data)
+      commit("loadImageQuizData", data)
     if (messages)
       sendNotice(e.sender, messages.join("\n"))
   })
@@ -227,9 +227,11 @@ function createViewWindow() {
   })
 
   windows.view.loadURL(url("view"))
+  commit("showViewPage")
 
   windows.view.on("closed", () => {
     windows.view = null
+    commit("hideViewPage")
   })
 }
 
@@ -239,7 +241,7 @@ function sendNotice(window, text) {
 }
 
 
-function commit(e, type, payload) {
+function commit(type, payload) {
   if (type === "resolveSlash") {
     backup = cloneDeep(store.state)
   }
