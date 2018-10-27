@@ -15,7 +15,11 @@
         </div>
       </div>
     </div>
-    <div class="rank" :class="{ norank: !isRanked }">{{ rank }}</div>
+    <div
+      class="rank"
+      :class="{ 'ranked animated fadeIn delay-2s': isRanked }">
+      {{ rank }}
+    </div>
   </div>
 </template>
 
@@ -31,10 +35,11 @@
     font-weight: bold;
     padding: 5px;
     text-align: center;
-    color: red;
+    color: transparent;
+    justify-self: center;
 
-    &.norank {
-      color: transparent;
+    &.ranked {
+      color: red;
     }
   }
 
@@ -47,6 +52,7 @@
     grid-auto-rows: 5rem;
     box-shadow: 0 0 2px 0px darkgrey;
     font-family: "M PLUS 1p", sans-serif;
+    justify-self: center;
 
     .no {
       border-bottom: solid 1px;
@@ -91,24 +97,30 @@
       },
       rank() {
         let rank = this.player.rank
-        if (rank == null)
-          return "---"
+        // if (rank == null)
+        //   return "---"
         
-        let suf = ""
-        if (rank == 11 || rank == 12 || rank == 13) {
-          suf = "th"
-        } else if (rank % 10 == 1) {
-          suf = "st"
-        } else if (rank % 10 == 2) {
-          suf = "nd"
-        } else if (rank % 10 == 3) {
-          suf = "rd"
-        }
+        // let suf = ""
+        // if (rank == 11 || rank == 12 || rank == 13) {
+        //   suf = "th"
+        // } else if (rank % 10 == 1) {
+        //   suf = "st"
+        // } else if (rank % 10 == 2) {
+        //   suf = "nd"
+        // } else if (rank % 10 == 3) {
+        //   suf = "rd"
+        // }
 
-        return `${rank}${suf}`
+        // return `${rank}${suf}`
+        
+        if (rank != null && rank > 0) {
+          return "Winner!"
+        } else {
+          return "---"
+        }
       },
       isRanked() {
-        return this.rank !== "---"
+        return this.player.rank !== null
       },
       ...mapState({
         scoreDefinitions: state => state.scoreDefinitions,

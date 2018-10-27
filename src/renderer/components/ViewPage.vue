@@ -7,7 +7,7 @@
         v-for="(playerId, no) in playerOrder"
         :key="playerId">
         <transition appear
-          enter-active-class="animated flipInY">
+          enter-active-class="animated flipInY delay-1s">
           <player-view
             class="player-view-template"
             :player-id="playerId"
@@ -50,8 +50,7 @@
       border-top: 5px solid #6600CC;
 
       .player-view-template {
-        height: 100%;
-        animation-delay: 1s;
+        height: 100%;;
       }
 
       .image-view {
