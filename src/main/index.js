@@ -16,6 +16,10 @@ import {
   join as joinPath,
   parse as parsePath,
 } from "path"
+import {
+  detect,
+  convert,
+} from "encoding-japanese"
 import cloneDeep from "lodash/cloneDeep"
 import parseCsv from "csv-parse/lib/sync"
 
@@ -106,8 +110,12 @@ function selectAndReadCsv() {
 
     let content
     try {
-      content = readFileSync(path, {
-        encoding: "utf-8"
+      let buf = readFileSync(path)
+      let enc = detect(buf)
+      content = convert(buf, {
+        from: enc,
+        to: "UNICODE",
+        type: "string",
       })
     } catch (_) {
       messages.push(`[ERROR] ${base}の読み込みに失敗しました`)
