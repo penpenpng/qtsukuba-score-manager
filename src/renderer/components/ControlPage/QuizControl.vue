@@ -10,10 +10,6 @@
           :value="genre">{{ genre }}</option>
       </select>
     </label>
-    <div class="quiz-reader">
-      <base-button class="button" @click.native="selectAndReadCsv">csvから読み込む</base-button>
-      <base-button class="button" @click.native="selectAndReadImgdir">画像フォルダから読み込む</base-button>
-    </div>
     <div class="quiz-table-wrapper">
       <table class="quiz-table">
         <thead>
@@ -68,14 +64,6 @@
 </template>
 
 <style lang="scss" scoped>
-  .quiz-reader {
-    display: inline-block;
-    
-    .button {
-      margin-left: 15px;
-    }
-  }
-
   .quiz-table-wrapper {
     margin: 10px;
     margin-bottom: 15px;
@@ -166,7 +154,7 @@
     box-shadow: 0 0 2px 0px gray;
 
     .question {
-      height: 4em;
+      height: 6em;
       padding: 5px;
       border-bottom: solid 0.5px darkgray;
       overflow-wrap: break-word;

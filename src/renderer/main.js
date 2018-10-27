@@ -49,12 +49,6 @@ Vue.mixin({
     push(type, payload) {
       ipcRenderer.send("push", type, payload)
     },
-    selectAndReadCsv() {
-      ipcRenderer.send("select-and-read-csv")
-    },
-    selectAndReadImgdir() {
-      ipcRenderer.send("select-and-read-imgdir")
-    },
     loadImageAsBase64(path) {
       const { ext } = parsePath(path)
       if (/png/i.test(ext)) {

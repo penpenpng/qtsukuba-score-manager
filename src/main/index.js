@@ -6,6 +6,7 @@ import {
   ipcMain,
   dialog,
   Menu,
+  shell,
 } from "electron"
 import {
   readFileSync,
@@ -43,126 +44,6 @@ function main() {
   
   ipcMain.on("fetch", sync)
 
-  ipcMain.on("open-view-page", () => {
-    if (!windows.view) createViewWindow()
-  })
-
-  ipcMain.on("select-and-read-csv", (e) => {
-    const paths = dialog.showOpenDialog({
-      properties: ["openFile", "multiSelections"],
-      filters: [{name: "csv", extensions: ["csv"]}],
-    })
-
-    if (!paths)
-      return
-    
-    let data = {}
-    let messages = []
-    for (let path of paths) {
-      const { base, name, ext } = parsePath(path)
-      const genre = name
-
-      if (ext !== ".csv" && ext !== ".CSV") {
-        messages.push(`[ERROR] ${base}はcsvファイルではありません`)
-        continue
-      }
-
-      let content
-      try {
-        content = readFileSync(path, {
-          encoding: "utf-8"
-        })
-      } catch (_) {
-        messages.push(`[ERROR] ${base}の読み込みに失敗しました`)
-        continue
-      }
-
-      let list = [{
-        q: "(この問題はダミーです)",
-        a: "",
-      }]
-      try {
-        const csv = parseCsv(content)
-        for (let row of csv)
-          list.push({
-            q: row[0].trim(),
-            a: row[1].trim(),
-          })
-      } catch (_) {
-        messages.push(`[ERROR] ${base}のパースに失敗しました`)
-        continue
-      }
-
-      if (list.length <= 1) {
-        messages.push(`[ERROR] ${base}は空です`)
-        continue
-      }
-
-      if (store.state.quiz.genres.findIndex((g) => g === genre) < 0) {
-        messages.push(`"${genre}"は正常に読み込まれました`)
-      } else {
-        messages.push(`"${genre}"は上書きされました`)
-      }
-      data[genre] = list
-    }
-
-    if (data)
-      commit("loadNormalQuizData", data)
-    if (messages)
-      sendNotice(e.sender, messages.join("\n"))
-  })
-
-  ipcMain.on("select-and-read-imgdir", (e) => {
-    const paths = dialog.showOpenDialog({
-      properties: ["openDirectory", "multiSelections"],
-    })
-
-    if (!paths)
-      return
-    
-    let data = {}
-    let messages = []
-    for (let dir of paths) {
-      const files = readdirSync(dir)
-      let list = [{
-        q: "(この問題はダミーです)",
-        a: "",
-        path: "",
-      }]
-      for (let file of files.sort()) {
-        const { name, base, ext } = parsePath(file)
-
-        if (!/(jpe?g|png)/i.test(ext))
-          continue
-        
-        try {
-          let splitted = name.split("_")
-          list.push({
-            q: splitted[1].trim(),
-            a: splitted[2].trim(),
-            path: joinPath(dir, file),
-          })
-        } catch (_) {
-          messages.push(`[ERROR] ${base}はファイル名が不適切です`)
-          continue
-        }  
-      }
-
-      if (list.length <= 1) {
-        messages.push(`[ERROR] ${dir}には適切な画像ファイルがありません`)
-        continue
-      }
-
-      data[`[Visual] ${parsePath(dir).name}`] = list
-      messages.push(`${dir}から${list.length - 1}件の問題を読み込みました`)
-    }
-
-    if (data)
-      commit("loadImageQuizData", data)
-    if (messages)
-      sendNotice(e.sender, messages.join("\n"))
-  })
-
   createControlWindow()
   
   Menu.setApplicationMenu(Menu.buildFromTemplate([
@@ -171,16 +52,153 @@ function main() {
       submenu: [{
         label: "得点表示ウィンドウ",
         click: createViewWindow,
-      }],      
+      }],
     },
     {
       label: "制御",
+      submenu: [
+        {
+          label: "CSVから問題を読み込む",
+          click: selectAndReadCsv,
+        },
+        {
+          label: "画像フォルダから問題を読み込む",
+          click: selectAndReadImgdir,
+        },
+        {
+          label: "1つ前のスコア処理をキャンセルする",
+          click: sync,
+        }
+      ],
+    },
+    {
+      label: "ヘルプ",
       submenu: [{
-        label: "1つ前のスコア処理をキャンセルする",
-        click: sync,
-      }],
+        label: "Github",
+        click: () => {
+          shell.openExternal("https://github.com/penpenpng/qtsukuba-score-manager")
+        },
+      }]
     }
   ]))  
+}
+
+
+function selectAndReadCsv() {
+  const paths = dialog.showOpenDialog({
+    properties: ["openFile", "multiSelections"],
+    filters: [{name: "csv", extensions: ["csv"]}],
+  })
+
+  if (!paths)
+    return
+  
+  let data = {}
+  let messages = []
+  for (let path of paths) {
+    const { base, name, ext } = parsePath(path)
+    const genre = name
+
+    if (ext !== ".csv" && ext !== ".CSV") {
+      messages.push(`[ERROR] ${base}はcsvファイルではありません`)
+      continue
+    }
+
+    let content
+    try {
+      content = readFileSync(path, {
+        encoding: "utf-8"
+      })
+    } catch (_) {
+      messages.push(`[ERROR] ${base}の読み込みに失敗しました`)
+      continue
+    }
+
+    let list = [{
+      q: "(この問題はダミーです)",
+      a: "",
+    }]
+    try {
+      const csv = parseCsv(content)
+      for (let row of csv)
+        list.push({
+          q: row[0].trim(),
+          a: row[1].trim(),
+        })
+    } catch (_) {
+      messages.push(`[ERROR] ${base}のパースに失敗しました`)
+      continue
+    }
+
+    if (list.length <= 1) {
+      messages.push(`[ERROR] ${base}は空です`)
+      continue
+    }
+
+    if (store.state.quiz.genres.findIndex((g) => g === genre) < 0) {
+      messages.push(`"${genre}"は正常に読み込まれました`)
+    } else {
+      messages.push(`"${genre}"は上書きされました`)
+    }
+    data[genre] = list
+  }
+
+  if (data)
+    commit("loadNormalQuizData", data)
+  if (messages && windows.control)
+    sendNotice(windows.control, messages.join("\n"))
+}
+
+
+function selectAndReadImgdir() {
+  const paths = dialog.showOpenDialog({
+    properties: ["openDirectory", "multiSelections"],
+  })
+
+  if (!paths)
+    return
+  
+  let data = {}
+  let messages = []
+  for (let dir of paths) {
+    const files = readdirSync(dir)
+    let list = [{
+      q: "(この問題はダミーです)",
+      a: "",
+      path: "",
+    }]
+    for (let file of files.sort()) {
+      const { name, base, ext } = parsePath(file)
+
+      if (!/(jpe?g|png)/i.test(ext))
+        continue
+      
+      try {
+        let splitted = name.split("_")
+        list.push({
+          q: splitted[1].trim(),
+          a: splitted[2].trim(),
+          path: joinPath(dir, file),
+        })
+      } catch (_) {
+        messages.push(`[ERROR] ${base}はファイル名が不適切です`)
+        continue
+      }  
+    }
+
+    if (list.length <= 1) {
+      messages.push(`[ERROR] ${dir}には適切な画像ファイルがありません`)
+      continue
+    }
+
+    data[`[Visual] ${parsePath(dir).name}`] = list
+    messages.push(`${dir}から${list.length - 1}件の問題を読み込みました`)
+  }
+
+  if (data)
+    commit("loadImageQuizData", data)
+  if (messages && windows.control)
+    sendNotice(windows.control, messages.join("\n"))
 }
 
 
