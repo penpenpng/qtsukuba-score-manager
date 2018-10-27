@@ -17,10 +17,14 @@
         v-model="correctlyAnswererIds">
       <label :for="'correct-' + playerId">正解</label>
     </div>
-    <input type="text" v-model="name">
+    <input
+      class="input-name"
+      type="text"
+      v-model="name">
     <input
       v-for="scoreKey in Object.keys(player.score)"
       :key="scoreKey"
+      class="input-score"
       type="number"
       :value="player.score[scoreKey].value"
       @input="updateScore($event, scoreKey)">
@@ -88,6 +92,14 @@
           color: black;
         }
       }
+    }
+
+    .input-name {
+      width: 100px;
+    }
+
+    .input-score {
+      width: 50px;
     }
 
     .float-right {
