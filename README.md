@@ -1,16 +1,27 @@
 # qtsukuba-score-manager
+2018年度雙峰祭とQ-Tsukubaのための得点表示システムです。
 
-> score management app for Sohosai & Q-tsukuba
+![control](./demo/control.png)
+![view](./demo/view.png)
 
-#### Build Setup
+
+## Build
+ビルドには[npm](https://www.npmjs.com/)が必要です。
+
+Windowsユーザはルートディレクトリで以下を実行してください。
+Macユーザは`npm run build`の代わりに`npm run build:mac`を実行してください。
 
 ``` bash
-# install dependencies
 npm install
-
-# build electron application for windows
 npm run build
 ```
+
+もしあなたが開発者ならば、以下のスクリプトでhot reloadingを有効にした状態で試運転できます。
+
+``` bash
+npm run dev
+```
+
 
 ---
 
