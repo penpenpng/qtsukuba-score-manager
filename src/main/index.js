@@ -230,7 +230,6 @@ function createViewWindow() {
 
   windows.view.on("closed", () => {
     windows.view = null
-    if (process.platform !== "darwin") app.quit()
   })
 }
 
