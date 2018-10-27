@@ -21,6 +21,7 @@
     justify-content: center;
     width: 100%;
     height: 100%;
+    font-family: "M PLUS 1p", sans-serif;
     
     .quiz-view {
       box-shadow: 0 0 2px 0px darkgrey;

@@ -34,6 +34,7 @@
     .header {
       background: #6600CC;
       color: white;
+      font-family: "Times New Roman", "Meiryo", Times, serif;
       font-size: 3rem;
       padding: 3px;
       padding-left: 10px;

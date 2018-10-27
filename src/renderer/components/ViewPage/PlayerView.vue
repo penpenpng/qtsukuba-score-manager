@@ -46,16 +46,19 @@
     grid-auto-columns: 1fr;
     grid-auto-rows: 5rem;
     box-shadow: 0 0 2px 0px darkgrey;
+    font-family: "M PLUS 1p", sans-serif;
 
     .no {
       border-bottom: solid 1px;
       text-align: center;
+      font-weight: 400;
     }
 
     .name {
       writing-mode: vertical-rl;
       text-align: center;
       justify-self: center;
+      font-weight: 300;
       font-size: 3rem;
       padding: 10px;
     }
@@ -64,9 +67,10 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      background: #dad5d1;
+      background: #fff1e6;
 
       .score {
+        font-family: "Play", sans-serif;
         font-size: 4rem;
       }
     }
