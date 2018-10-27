@@ -20,11 +20,18 @@
       得点表示画面を{{viewVisibility ? "隠す" : "描画する"}}
     </base-button>
 
-    <h1>プレイヤー/スコア管理</h1>
-    <players-control class="control-section"></players-control>
+    <div class="columns-container">
+      <div>
+        <h1>プレイヤー/スコア管理</h1>
+        <players-control class="control-section"></players-control>
+      </div>
 
-    <h1>クイズ表示制御</h1>
-    <quiz-control class="control-section"></quiz-control>
+      <div>
+        <h1>クイズ表示制御</h1>
+        <quiz-control class="control-section"></quiz-control>
+      </div>
+    </div>
+
   </div>
 </template>
 
@@ -33,6 +40,7 @@
     0% {opacity: 0.5;}
     100% {opacity: 1;}
   }
+
   .control-page {
     padding: 20px;
     margin: 0;
@@ -47,7 +55,14 @@
       padding: 15px;
       box-shadow: 0 0 2px 0px grey;
       border-radius: 5px;
+      margin: 5px;
     }
+  }
+
+  .columns-container {
+    display: grid;
+    grid-template-rows: 1fr;
+    grid-template-columns: 50% 50%;
   }
 </style>
 
@@ -58,7 +73,6 @@
       margin: 0;
       margin-top: 10px;
       padding: 10px;
-      padding-left: 20px;
       font-weight: normal;
     }
 

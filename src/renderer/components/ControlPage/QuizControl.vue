@@ -14,26 +14,28 @@
       <base-button class="button" @click.native="selectAndReadCsv">csvから読み込む</base-button>
       <base-button class="button" @click.native="selectAndReadImgdir">画像フォルダから読み込む</base-button>
     </div>
-    <table class="quiz-table">
-      <thead>
-        <tr>
-          <th class="no">#</th>
-          <th class="question">問題</th>
-          <th class="answer">答え</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(row, index) in currentGenreData"
-          :key="currentGenre + index"
-          :class="{ selected: currentGenreCursor == index }"
-          @click="jumpCursor(index)">
-          <td>{{ index }}</td>
-          <td>{{ row.q }}</td>
-          <td>{{ row.a }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="quiz-table-wrapper">
+      <table class="quiz-table">
+        <thead>
+          <tr>
+            <th class="no">#</th>
+            <th class="question">問題</th>
+            <th class="answer">答え</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(row, index) in currentGenreData"
+            :key="currentGenre + index"
+            :class="{ selected: currentGenreCursor == index }"
+            @click="jumpCursor(index)">
+            <td>{{ index }}</td>
+            <td>{{ row.q }}</td>
+            <td>{{ row.a }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <h2>表示状態変更</h2>
     <label class="auto-display-control" v-show="currentQuizType !== 'image'">
@@ -74,16 +76,19 @@
     }
   }
 
-  .quiz-table {
-    width: 100%;
-    max-height: 800px;
+  .quiz-table-wrapper {
     margin: 10px;
     margin-bottom: 15px;
+    max-height: 200px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+
+  .quiz-table {
+    width: 100%;
     table-layout: fixed;
     box-shadow: 0 0 2px 0px gray;
-    border: 1px solid;
     border-collapse: collapse;
-    overflow-y: scroll;
 
     thead tr {
       background: aliceblue;
