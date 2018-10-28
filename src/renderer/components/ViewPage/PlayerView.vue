@@ -25,6 +25,7 @@
 
 <style lang="scss" scoped>
   .player-view-wrapper {
+    width: 150px;
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr auto;
