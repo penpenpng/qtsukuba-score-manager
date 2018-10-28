@@ -71,7 +71,7 @@ function main() {
         },
         {
           label: "1つ前のスコア処理をキャンセルする",
-          click: sync,
+          click: loadBackup,
         }
       ],
     },
@@ -211,6 +211,12 @@ function selectAndReadImgdir() {
 
 
 function sync() {
+  for (let w of Object.values(windows)) if (w)
+    w.webContents.send("initialize", store.state)
+}
+
+
+function loadBackup() {
   store.replaceState(backup)
   for (let w of Object.values(windows)) if (w)
     w.webContents.send("initialize", backup)
