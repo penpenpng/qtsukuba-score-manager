@@ -160,7 +160,7 @@
         this.push("updateScore", {
           playerId: this.playerId,
           scoreKey: key,
-          value: +e.target.value,
+          value: e.target.value,
         })
       },
       deletePlayer() {

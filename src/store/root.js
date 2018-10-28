@@ -89,7 +89,7 @@ const mutations = {
   },
   updateScore(state, args) {
     let { scoreKey, playerId, value } = args
-    state.players[playerId].score[scoreKey].value = value
+    state.players[playerId].score[scoreKey].value = +value
     updateRank(state.ruleKey, state)
   },
 
