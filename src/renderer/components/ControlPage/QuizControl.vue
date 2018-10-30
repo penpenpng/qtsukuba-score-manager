@@ -35,7 +35,7 @@
 
     <h2>表示状態変更</h2>
     <label class="auto-display-control" v-show="currentQuizType !== 'image'">
-      <input type="checkbox" :checked="autoDisplay" @input="toggleAutoDisplayMode">
+      <input type="checkbox" :checked="autoDisplay" @change="toggleAutoDisplayMode">
       スコア処理時に次の問題と答えを自動表示
     </label>
     <div class="view-state-control">
@@ -236,6 +236,7 @@
         this.push("changeViewPhase", "showAll")
       },
       toggleAutoDisplayMode() {
+        console.log(1)
         this.push("toggleAutoDisplayMode")
       },
       toggleImageDisplay() {
