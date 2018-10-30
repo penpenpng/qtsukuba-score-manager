@@ -236,7 +236,6 @@
         this.push("changeViewPhase", "showAll")
       },
       toggleAutoDisplayMode() {
-        console.log(1)
         this.push("toggleAutoDisplayMode")
       },
       toggleImageDisplay() {
