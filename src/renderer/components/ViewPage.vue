@@ -27,6 +27,7 @@
     margin: 0;
     height: 100vh;
     width: 100vw;
+    max-width: 100vw;
     overflow: hidden;
     display: grid;
     grid-template-rows: auto 1fr 30%;
@@ -44,14 +45,14 @@
       display: flex;
       flex-direction: row;
       justify-content: space-around;
-      padding: 40px 130px;
+      padding: 40px 0;
       padding-bottom: 15px;
       position: relative;
       margin-top: 1px;
       border-top: 5px solid #6600CC;
 
       .player-view-template {
-        height: 100%;;
+        height: 100%;
       }
 
       .image-view {
