@@ -1,5 +1,9 @@
 <template>
   <div class="player-control">
+    <base-button
+      class="mark-button"
+      :class="{marked: marked}"
+      @click.native="markPlayer">Mark</base-button>
     <div class="actions">
       <span> No. {{ playerNo }} </span>
       <input
@@ -51,6 +55,16 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+
+    .mark-button {
+      background: lightgray;
+      margin: 5px;
+
+      &.marked {
+        background: gold;
+        color: black;
+      }
+    }
 
     .actions {
       display: flex;
@@ -127,6 +141,9 @@
       scoreDefinitons() {
         return this.$store.state.scoreDefinitons
       },
+      marked() {
+        return this.$store.state.markedId === this.playerId
+      },
       correctlyAnswererIds: {
         get() {
           return this.$store.state.correctlyAnswererIds
@@ -166,6 +183,9 @@
       deletePlayer() {
         this.push("deletePlayer", this.playerId)
       },
+      markPlayer() {
+        this.push("markPlayer", this.playerId)
+      }
     }
   }
 </script>

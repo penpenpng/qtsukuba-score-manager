@@ -1,6 +1,8 @@
 <template>
   <div class="player-view-wrapper">
-    <div class="player-view">
+    <div
+      class="player-view"
+      :class="{marked: marked}">
       <div class="no">No. {{ playerNo }}</div>
       <div class="name">{{ player.name }}</div>
       <div
@@ -17,7 +19,7 @@
     </div>
     <div
       class="rank"
-      :class="{ 'ranked animated fadeIn delay-2s': isRanked }">
+      :class="{'ranked animated fadeIn delay-2s': isRanked }">
       {{ rank }}
     </div>
   </div>
@@ -51,9 +53,13 @@
     grid-template-rows: auto 1fr;
     grid-auto-columns: 1fr;
     grid-auto-rows: 5rem;
-    box-shadow: 0 0 2px 0px darkgrey;
+    box-shadow: 0 0 2px 0 darkgrey;
     font-family: "M PLUS 1p", sans-serif;
     justify-self: center;
+
+    &.marked {
+      box-shadow: 0 0 3px 0 blue;
+    }
 
     .no {
       border-bottom: solid 1px;
@@ -95,6 +101,9 @@
     computed: {
       player() {
         return this.$store.state.players[this.playerId]
+      },
+      marked() {
+        return this.$store.state.markedId === this.playerId
       },
       rank() {
         let rank = this.player.rank

@@ -22,6 +22,7 @@ const state = {
   scoreDefinitions: [],
   questionNo: 0,
   slasherId: null,
+  markedId: null,
   correctlyAnswererIds: [],
   nextPlayerId: "1",
   playerOrder: [],
@@ -91,6 +92,12 @@ const mutations = {
     let { scoreKey, playerId, value } = args
     state.players[playerId].score[scoreKey].value = +value
     updateRank(state.ruleKey, state)
+  },
+  markPlayer(state, id) {
+    if (state.markedId === id)
+      state.markedId = null
+    else
+      state.markedId = id
   },
 
   // Judgement Operations
