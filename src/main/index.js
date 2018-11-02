@@ -21,6 +21,7 @@ import {
   convert,
 } from "encoding-japanese"
 import cloneDeep from "lodash/cloneDeep"
+import isEmpty from "lodash/isEmpty"
 import parseCsv from "csv-parse/lib/sync"
 
 import store from "../store"
@@ -32,6 +33,7 @@ import store from "../store"
 if (process.env.NODE_ENV !== "development") {
   global.__static = require("path").join(__dirname, "/static").replace(/\\/g, "\\\\")
 }
+
 process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = true
 
 
@@ -39,17 +41,179 @@ let windows = {}
 let backup = cloneDeep(store.state)
 
 
+app.on("ready", main)
+
 function main() {
   app.on("activate", () => {
     if (!windows.control) createControlWindow()
   })
 
-  ipcMain.on("push", (e, t, p) => commit(t, p))
-  
-  ipcMain.on("fetch", sync)
-
+  registerIpcEvents()
+  setApplicationMenu()
   createControlWindow()
-  
+}
+
+function registerIpcEvents() {
+  function sync() {
+    for (let w of Object.values(windows)) if (w)
+      w.webContents.send("initialize", store.state)
+  }
+
+  ipcMain.on("push", (e, t, p) => commit(t, p))
+  ipcMain.on("fetch", sync)
+}
+
+function setApplicationMenu() {
+  function sendNotice(window, text) {
+    window.webContents.send("notice", text)
+  }
+
+  function loadBackup() {
+    store.replaceState(backup)
+    for (let w of Object.values(windows)) if (w)
+      w.webContents.send("initialize", backup)
+  }
+
+  function loadCsv() {
+    function askCsvFilePaths() {
+      return dialog.showOpenDialog({
+        properties: ["openFile", "multiSelections"],
+        filters: [{name: "csv", extensions: ["csv"]}],
+      })
+    }
+
+    function loadNormalQuizData(filePath) {
+      const { base } = parsePath(filePath)
+
+      let content
+      try {
+        let buf = readFileSync(filePath)
+        let enc = detect(buf)
+        content = convert(buf, {
+          from: enc,
+          to: "UNICODE",
+          type: "string",
+        })
+      } catch (_) {
+        throw Error(`${base}を開けませんでした`)
+      }
+
+      let csv
+      try {
+        csv = parseCsv(content, {
+          skip_empty_lines: true,
+        })
+      } catch (_) {
+        throw Error(`${base}のパースに失敗しました`)
+      }
+
+      let list = []
+      for (let row of csv) {
+        if (row.length <= 1)
+          continue
+        let question = row[0].trim()
+        let answer = row[1].trim()
+        if (isEmpty(question) || isEmpty(answer))
+          continue
+        list.push({
+          q: question,
+          a: answer,
+        })
+      }
+      return list
+    }
+
+    const csvPaths = askCsvFilePaths()
+    if (!csvPaths)
+      return
+
+    let data = {}
+    let messages = []
+    for (let file of csvPaths) {
+      let quizList
+      try {
+        quizList = loadNormalQuizData(file)
+      } catch (e) {
+        message.push(`[ERROR] ${e.message}`)
+        continue
+      }
+
+      if (isEmpty(quizList)) {
+        messages.push(`[ERROR] ${file}は空です`)
+        continue
+      }
+
+      const genre = parsePath(file).name
+      messages.push(`${file}から${list.length}件の問題を読み込みました`)
+      data[genre] = [{
+        q: "(この問題はダミーです)",
+        a: "",
+      }].concat(quizList)
+    }
+
+    if (data)
+      commit("loadNormalQuizData", data)
+    if (messages && windows.control)
+      sendNotice(windows.control, messages.join("\n"))
+  }
+
+  function loadImageDirectory() {
+    function askImageDirectoryPaths() {
+      return dialog.showOpenDialog({
+        properties: ["openDirectory", "multiSelections"],
+      })
+    }
+
+    function loadVisualQuizData(dirPath) {
+      let list = []
+      for (let filePath of readdirSync(dirPath).sort()) {
+        const { name, ext } = parsePath(filePath)
+
+        if (!/(jpe?g|png)/i.test(ext))
+          continue
+
+        try {
+          let splitted = name.split("_")
+          list.push({
+            q: splitted[1].trim(),
+            a: splitted[2].trim(),
+            path: joinPath(dirPath, filePath),
+          })
+        } catch (_) {
+          continue
+        }
+      }
+      return list
+    }
+
+    const dirPaths = askImageDirectoryPaths()
+    if (!dirPaths)
+      return
+
+    let data = {}
+    let messages = []
+    for (let dir of dirPaths) {
+      let quizList = loadVisualQuizData(dir)
+
+      if (isEmpty(quizList)) {
+        messages.push(`[ERROR] ${dir}には適切な画像ファイルがありません`)
+        continue
+      }
+
+      messages.push(`${dir}から${list.length}件の問題を読み込みました`)
+      data[`[Visual] ${parsePath(dir).name}`] = [{
+        q: "(この問題はダミーです)",
+        a: "",
+        path: "",
+      }].concat(quizList)
+    }
+
+    if (data)
+      commit("loadImageQuizData", data)
+    if (messages && windows.control)
+      sendNotice(windows.control, messages.join("\n"))
+  }
+
   Menu.setApplicationMenu(Menu.buildFromTemplate([
     {
       label: "表示",
@@ -63,11 +227,11 @@ function main() {
       submenu: [
         {
           label: "CSVから問題を読み込む",
-          click: selectAndReadCsv,
+          click: loadCsv,
         },
         {
           label: "画像フォルダから問題を読み込む",
-          click: selectAndReadImgdir,
+          click: loadImageDirectory,
         },
         {
           label: "1つ前のスコア処理をキャンセルする",
@@ -84,227 +248,79 @@ function main() {
         },
       }]
     }
-  ]))  
+  ]))
 }
-
-
-function selectAndReadCsv() {
-  const paths = dialog.showOpenDialog({
-    properties: ["openFile", "multiSelections"],
-    filters: [{name: "csv", extensions: ["csv"]}],
-  })
-
-  if (!paths)
-    return
-  
-  let data = {}
-  let messages = []
-  for (let path of paths) {
-    const { base, name, ext } = parsePath(path)
-    const genre = name
-
-    if (ext !== ".csv" && ext !== ".CSV") {
-      messages.push(`[ERROR] ${base}はcsvファイルではありません`)
-      continue
-    }
-
-    let content
-    try {
-      let buf = readFileSync(path)
-      let enc = detect(buf)
-      content = convert(buf, {
-        from: enc,
-        to: "UNICODE",
-        type: "string",
-      })
-    } catch (_) {
-      messages.push(`[ERROR] ${base}の読み込みに失敗しました`)
-      continue
-    }
-
-    let list = [{
-      q: "(この問題はダミーです)",
-      a: "",
-    }]
-    try {
-      const csv = parseCsv(content)
-      for (let row of csv)
-        list.push({
-          q: row[0].trim(),
-          a: row[1].trim(),
-        })
-    } catch (_) {
-      messages.push(`[ERROR] ${base}のパースに失敗しました`)
-      continue
-    }
-
-    if (list.length <= 1) {
-      messages.push(`[ERROR] ${base}は空です`)
-      continue
-    }
-
-    if (store.state.quiz.genres.findIndex((g) => g === genre) < 0) {
-      messages.push(`"${genre}"は正常に読み込まれました`)
-    } else {
-      messages.push(`"${genre}"は上書きされました`)
-    }
-    data[genre] = list
-  }
-
-  if (data)
-    commit("loadNormalQuizData", data)
-  if (messages && windows.control)
-    sendNotice(windows.control, messages.join("\n"))
-}
-
-
-function selectAndReadImgdir() {
-  const paths = dialog.showOpenDialog({
-    properties: ["openDirectory", "multiSelections"],
-  })
-
-  if (!paths)
-    return
-  
-  let data = {}
-  let messages = []
-  for (let dir of paths) {
-    const files = readdirSync(dir)
-    let list = [{
-      q: "(この問題はダミーです)",
-      a: "",
-      path: "",
-    }]
-    for (let file of files.sort()) {
-      const { name, base, ext } = parsePath(file)
-
-      if (!/(jpe?g|png)/i.test(ext))
-        continue
-      
-      try {
-        let splitted = name.split("_")
-        list.push({
-          q: splitted[1].trim(),
-          a: splitted[2].trim(),
-          path: joinPath(dir, file),
-        })
-      } catch (_) {
-        messages.push(`[ERROR] ${base}はファイル名が不適切です`)
-        continue
-      }  
-    }
-
-    if (list.length <= 1) {
-      messages.push(`[ERROR] ${dir}には適切な画像ファイルがありません`)
-      continue
-    }
-
-    data[`[Visual] ${parsePath(dir).name}`] = list
-    messages.push(`${dir}から${list.length - 1}件の問題を読み込みました`)
-  }
-
-  if (data)
-    commit("loadImageQuizData", data)
-  if (messages && windows.control)
-    sendNotice(windows.control, messages.join("\n"))
-}
-
-
-function sync() {
-  for (let w of Object.values(windows)) if (w)
-    w.webContents.send("initialize", store.state)
-}
-
-
-function loadBackup() {
-  store.replaceState(backup)
-  for (let w of Object.values(windows)) if (w)
-    w.webContents.send("initialize", backup)
-}
-
 
 function createControlWindow() {
   if (windows.control)
     windows.control.close()
-  
-  windows.control = new BrowserWindow({
+
+  let win = new BrowserWindow({
     height: 563,
-    useContentSize: true,
     width: 1000,
+    useContentSize: true,
   })
 
-  windows.control.loadURL(url(""))
-
-  windows.control.on("close", (e) => {
-    if (process.platform === "darwin")
-      return
-    
-    let clicked = dialog.showMessageBox({
-      type: "question",
-      title: "確認",
-      message: "アプリケーションを終了しますか？",
-      buttons: ["終了", "キャンセル"],
-    })
-    if (clicked === 1)
-      e.preventDefault()
+  win.loadURL(url(""))
+  win.on("close", (e) => {
+    if (process.platform !== "darwin") {
+      let clicked = dialog.showMessageBox({
+        type: "question",
+        title: "確認",
+        message: "アプリケーションを終了しますか？",
+        buttons: ["終了", "キャンセル"],
+      })
+      if (clicked === 1)
+        e.preventDefault()
+    }
   })
-
-  windows.control.on("closed", () => {
+  win.on("closed", () => {
     windows.control = null
     if (windows.view)
       windows.view.close()
-    windows.view = null
-  })
-}
 
+    if (process.platform !== "darwin")
+      app.quit()
+  })
+
+  windows.control = win
+}
 
 function createViewWindow() {
   if (windows.view)
     windows.view.close()
 
-  windows.view = new BrowserWindow({
+  let win = new BrowserWindow({
     height: 563,
-    useContentSize: true,
     width: 1000,
+    useContentSize: true,
     autoHideMenuBar: true,
   })
-
-  windows.view.loadURL(url("view"))
+  win.loadURL(url("view"))
+  win.on("closed", () => {
+    commit("hideViewPage")
+    windows.view = null
+  })
   commit("showViewPage")
 
-  windows.view.on("closed", () => {
-    windows.view = null
-    commit("hideViewPage")
-  })
+  windows.view = win
 }
-
-
-function sendNotice(window, text) {
-  window.webContents.send("notice", text)
-}
-
 
 function commit(type, payload) {
-  if (type === "resolveSlash") {
+  if (type === "resolveSlash")
     backup = cloneDeep(store.state)
-  }
 
+  store.commit(type, payload)
   for (let w of Object.values(windows)) if (w)
     w.webContents.send("postback", type, payload)
-  store.commit(type, payload)
 }
-
 
 function url(path) {
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === "development")
     return `http://localhost:9080/#/${path}`
-  } else {
+  else
     return `file://${__dirname}/index.html#${path}`
-  }
 }
-
-  
-app.on("ready", main)
 
 
 /**
