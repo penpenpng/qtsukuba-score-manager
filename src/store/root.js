@@ -1,3 +1,5 @@
+import Vue from "vue"
+
 import {
   getRuleOptions,
   getScoreDefinitions,
@@ -7,7 +9,7 @@ import {
   updateRank,
 } from "./ruleLogic"
 import QuizModule from "./modules/quiz"
-import Vue from "vue"
+
 
 const state = {
   title: "No Title",
