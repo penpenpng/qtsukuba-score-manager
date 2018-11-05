@@ -5,6 +5,7 @@ import {
   ipcMain,
   Menu,
   shell,
+  dialog,
 } from "electron"
 
 import {
@@ -35,14 +36,17 @@ process.env["ELECTRON_DISABLE_SECURITY_WARNINGS"] = true
 app.on("ready", main)
 
 function main() {
-  app.on("activate", openControlWindow)
-
   initializeWindows()
   initializeFunctions()
   
+  registerAppEvents()
   registerIpcEvents()
   setApplicationMenu()
   openControlWindow()
+}
+
+function registerAppEvents() {
+  app.on("activate", openControlWindow)
 }
 
 function registerIpcEvents() {
@@ -78,12 +82,23 @@ function setApplicationMenu() {
     },
     {
       label: "ヘルプ",
-      submenu: [{
-        label: "Github",
-        click: () => {
-          shell.openExternal("https://github.com/penpenpng/qtsukuba-score-manager")
+      submenu: [
+        {
+          label: "使い方",
+          click: () => {
+            shell.openExternal("https://github.com/penpenpng/qtsukuba-score-manager")
+          },
         },
-      }]
+        {
+          label: "このアプリについて",
+          click: () => {
+            dialog.showMessageBox({
+              title: "バージョン情報",
+              message: `qtsukuba-score-manager v${process.env.npm_package_version}\nelectron: v${process.versions["electron"]}\nchromium: v${process.versions["chrome"]}`
+            })
+          }
+        }
+      ]
     }
   ]))
 }
