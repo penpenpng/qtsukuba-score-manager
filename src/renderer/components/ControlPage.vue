@@ -14,10 +14,10 @@
       </select>
     </label>
     <base-button
-      v-show="viewPageShown"
-      @click.native="toggleViewVisibility"
-      :class="{'show-button': !viewVisibility}">
-      得点表示画面を{{viewVisibility ? "隠す" : "描画する"}}
+      v-show="isViewPageVisible"
+      @click.native="push('toggleViewVisibility')"
+      :class="{'show-button': !isViewVisible}">
+      得点表示画面を{{isViewVisible ? "隠す" : "描画する"}}
     </base-button>
 
     <div class="columns-container">
@@ -114,15 +114,10 @@
         }
       },
       ...mapState({
-        viewPageShown: state => state.viewPageShown,
-        viewVisibility: state => state.viewVisibility,
+        isViewPageVisible: state => state.isViewPageVisible,
+        isViewVisible: state => state.isViewVisible,
         ruleOptions: state => state.ruleOptions,
       })
     },
-    methods: {
-      toggleViewVisibility() {
-        this.push("toggleViewVisibility")
-      }
-    }
   }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <base-button class="append-button" @click.native="appendPlayer">プレイヤーを追加</base-button>
+    <base-button class="append-button" @click.native="push('appendPlayer')">プレイヤーを追加</base-button>
     <div class="players">
       <player-control
         v-for="(playerId, no) in playerOrder"
@@ -10,10 +10,10 @@
     </div>
     <div class="actions">
       <base-button
-        @click.native="resolveSlash"
+        @click.native="push('resolveSlash')"
         class="button execute-button">スコア処理</base-button>
       <base-button
-        @click.native="reset"
+        @click.native="push('resetSelections')"
         class="button">選択状態を解除</base-button>
     </div>
   </div>
@@ -58,16 +58,5 @@
         playerOrder: state => state.playerOrder,
       })
     },
-    methods: {
-      appendPlayer() {
-        this.push("appendPlayer")
-      },
-      resolveSlash() {
-        this.push("resolveSlash")
-      },
-      reset() {
-        this.push("resetSelections")
-      },
-    }
   }
 </script>

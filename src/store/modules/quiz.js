@@ -1,4 +1,9 @@
+"use strict"
+
 import Vue from "vue"
+import {
+  includes,
+} from "lodash"
 
 
 const NO_TARGET = "未選択"
@@ -6,115 +11,107 @@ const NO_TARGET = "未選択"
 const state = {
   genres: [NO_TARGET],
   currentGenre: NO_TARGET,
-  viewPhase: "hidden",
-  autoDisplay: true,
-  imageDisplay: false,
-  cursor: {
-    [NO_TARGET]: 0,
-  },
-  type: {
-    [NO_TARGET]: "normal",
-  },
+  enableAutoNext: true,
+  isImageVisible: false,
+  isQuestionVisible: false,
+  isAnswerVisible: false,
   data: {
-    [NO_TARGET]: [
-      {
-        q: "",
-        a: "",
-      }
-    ],
+    [NO_TARGET]: {
+      type: "normal",
+      cursor: 0,
+      quizList: [
+        {
+          q: "",
+          a: "",
+        }
+      ]
+    },
   },
 }
 
 const getters = {
-  currentGenreData(state) {
-    return state.data[state.currentGenre]
+  currentQuizList(state) {
+    return state.data[state.currentGenre].quizList
   },
   currentGenreLength(state) {
-    return getters.currentGenreData(state).length
+    return getters.currentQuizList(state).length
   },
   currentGenreCursor(state) {
-    return state.cursor[state.currentGenre]
+    return state.data[state.currentGenre].cursor
   },
   currentQuestion(state) {
-    return state.data[state.currentGenre][getters.currentGenreCursor(state)]
+    return getters.currentQuizList(state)[getters.currentGenreCursor(state)]
   },
   currentQuizType(state) {
-    return state.type[state.currentGenre]
-  }
+    return state.data[state.currentGenre].type
+  },
 }
 
 const mutations = {
   changeGenre(state, genre) {
     state.currentGenre = genre
-    mutations.changeViewPhase(state, "hidden")
-    mutations.hideImage(state)
+    mutations.hideAll(state)
   },
   nextCursor(state) {
-    if (state.cursor[state.currentGenre] + 1 < getters.currentGenreLength(state)) {
-      state.cursor[state.currentGenre]++
-      mutations.changeViewPhase(state, "hidden")
-      mutations.hideImage(state)
-    }
-  },
-  prevCursor(state) {
-    if (state.cursor[state.currentGenre] > 0) {
-      state.cursor[state.currentGenre]--
-      mutations.changeViewPhase(state, "hidden")
-      mutations.hideImage(state)
+    if (state.data[state.currentGenre].cursor + 1 < getters.currentGenreLength(state)) {
+      state.data[state.currentGenre].cursor++
+      mutations.hideAll(state)
     }
   },
   jumpCursor(state, index) {
     index = +index
     if (0 <= index && index < getters.currentGenreLength(state)) {
-      state.cursor[state.currentGenre] = index
-      mutations.changeViewPhase(state, "hidden")
-      mutations.hideImage(state)
+      state.data[state.currentGenre].cursor = index
+      mutations.hideAll(state)
     }
   },
-  changeViewPhase(state, phase) {
-    if (
-      phase !== "hidden" &&
-      phase !== "qOnly" &&
-      phase !== "showAll"
-    ) throw new Error("Invalid argument")
-    
-    state.viewPhase = phase
 
-    if (phase === "hidden" || phase === "qOnly") 
-      mutations.hideImage(state)
+  toggleAutoNextFlag(state) {
+    state.enableAutoNext = !state.enableAutoNext
   },
+  hideAll(state) {
+    state.isQuestionVisible = false
+    state.isAnswerVisible = false
+    state.isImageVisible = false
+  },
+  showOnlyQuestion(state) {
+    state.isQuestionVisible = true
+    state.isAnswerVisible = false
+    state.isImageVisible = true
+  },
+  toggleImageVisibility(state) {
+    state.isImageVisible = !state.isImageVisible
+  },
+  showAll(state) {
+    state.isQuestionVisible = true
+    state.isAnswerVisible = true
+    state.isImageVisible = true
+  },
+  
   loadNormalQuizData(state, data) {
     for (let genre of Object.keys(data)) {
-      Vue.set(state.cursor, genre, 0)
-      Vue.set(state.type, genre, "normal")
-      Vue.set(state.data, genre, data[genre])
-      if (state.genres.findIndex((g) => g === genre) < 0) {
+      Vue.set(state.data, genre, {
+        type: "normal",
+        cursor: 0,
+        quizList: data[genre],
+      })
+      if (!includes(state.genres, genre)) {
         state.genres.push(genre)
       }
     }
   },
   loadImageQuizData(state, data) {
     for (let genre of Object.keys(data)) {
-      Vue.set(state.cursor, genre, 0)
-      Vue.set(state.type, genre, "image")
-      Vue.set(state.data, genre, data[genre])
-      if (state.genres.findIndex((g) => g === genre) < 0) {
+      Vue.set(state.data, genre, {
+        type: "image",
+        cursor: 0,
+        quizList: data[genre],
+      })
+      if (!includes(state.genres, genre)) {
         state.genres.push(genre)
       }
     }
   },
-  toggleAutoDisplayMode(state) {
-    state.autoDisplay = !state.autoDisplay
-  },
-  toggleImageDisplay(state) {
-    state.imageDisplay = !state.imageDisplay
-  },
-  hideImage(state) {
-    state.imageDisplay = false
-  },
-  showImage(state) {
-    state.imageDisplay = true
-  }
 }
 
 export default {

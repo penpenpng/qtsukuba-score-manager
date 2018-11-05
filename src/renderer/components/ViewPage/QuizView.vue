@@ -3,10 +3,10 @@
     <transition appear
       enter-active-class="animated fadeInUp">
       <div class="quiz-view">
-        <div class="quiz-view-row question" :class="{ hidden: viewPhase === 'hidden' }">
+        <div class="quiz-view-row question" :class="{ hidden: !isQuestionVisible }">
           {{ currentQuestion.q }}
         </div>
-        <div class="quiz-view-row answer" :class="{ hidden: viewPhase !== 'showAll' }">
+        <div class="quiz-view-row answer" :class="{ hidden: !isAnswerVisible }">
           A. {{ currentQuestion.a }}
         </div>
       </div>
@@ -66,8 +66,10 @@
   export default {
     computed: {
       ...mapState({
-        viewPhase: state => state.quiz.viewPhase,
         questionNo: state => state.questionNo,
+        isQuestionVisible: state => state.quiz.isQuestionVisible,
+        isAnswerVisible: state => state.quiz.isAnswerVisible,
+        isImageVisible: state => state.quiz.isImageVisible,
       }),
       ...mapGetters([
         "currentQuestion",

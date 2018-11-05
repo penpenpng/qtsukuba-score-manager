@@ -28,8 +28,8 @@ const state = {
   playerOrder: [],
   players: {},
   ranking: [],
-  viewPageShown: false,
-  viewVisibility: false,
+  isViewPageVisible: false,
+  isViewVisible: false,
 }
 
 const mutations = {
@@ -50,13 +50,13 @@ const mutations = {
     updateRank(state.ruleKey, state)
   },
   showViewPage(state) {
-    state.viewPageShown = true
+    state.isViewPageVisible = true
   },
   hideViewPage(state) {
-    state.viewPageShown = false
+    state.isViewPageVisible = false
   },
   toggleViewVisibility(state) {
-    state.viewVisibility = !state.viewVisibility
+    state.isViewVisible = !state.isViewVisible
   },
 
   // Player Management
@@ -113,9 +113,9 @@ const mutations = {
     updateRank(state.ruleKey, state)
     mutations.resetSelections(state)
 
-    if (state.quiz.autoDisplay && QuizModule.getters.currentQuizType(state.quiz) !== "image") {
+    if (state.quiz.enableAutoNext && QuizModule.getters.currentQuizType(state.quiz) !== "image") {
       QuizModule.mutations.nextCursor(state.quiz)
-      QuizModule.mutations.changeViewPhase(state.quiz, "showAll")
+      QuizModule.mutations.showAll(state.quiz)
     }
   },
   resetSelections(state) {

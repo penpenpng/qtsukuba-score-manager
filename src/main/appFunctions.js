@@ -15,8 +15,10 @@ import {
   detect,
   convert,
 } from "encoding-japanese"
-import isEmpty from "lodash/isEmpty"
-import cloneDeep from "lodash/cloneDeep"
+import {
+  isEmpty,
+  cloneDeep,
+} from "lodash"
 import parseCsv from "csv-parse/lib/sync"
 
 import store from "../store"
@@ -187,7 +189,7 @@ export function openSelectImageDirectoryDialog() {
   }
 
   if (data)
-    commit("loadNormalQuizData", data)
+    commit("loadImageQuizData", data)
   else
     errorMessage("読み込みはキャンセルされました")
 

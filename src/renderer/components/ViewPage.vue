@@ -1,8 +1,8 @@
 <template>
   <div class="view-page">
     <div class="header">{{ title }}</div>
-    <div class="body" v-if="viewVisibility">
-      <image-view class="image-view" v-if="imageDisplay"></image-view>
+    <div class="body" v-if="isViewVisible">
+      <image-view class="image-view" v-if="isImageVisible && currentQuizType === 'image'"></image-view>
       <div 
         v-for="(playerId, no) in playerOrder"
         :key="playerId">
@@ -15,7 +15,7 @@
         </transition>
       </div>
     </div>
-    <div class="footer" v-if="viewVisibility">
+    <div class="footer" v-if="isViewVisible">
       <quiz-view></quiz-view> 
     </div>
   </div>
@@ -78,7 +78,11 @@
 </style>
 
 <script>
-  import { mapState } from "vuex"
+  import {
+    mapState,
+    mapGetters,
+  } from "vuex"
+
   import PlayerView from "./ViewPage/PlayerView.vue"
   import QuizView from "./ViewPage/QuizView.vue"
   import ImageView from "./ViewPage/ImageView.vue"
@@ -93,9 +97,12 @@
       ...mapState({
         title: state => state.title,
         playerOrder: state => state.playerOrder,
-        imageDisplay: state => state.quiz.imageDisplay,
-        viewVisibility: state => state.viewVisibility,
-      })
+        isImageVisible: state => state.quiz.isImageVisible,
+        isViewVisible: state => state.isViewVisible,
+      }),
+      ...mapGetters([
+        "currentQuizType",
+      ])
     },
   }
 </script>

@@ -21,7 +21,7 @@
         </thead>
         <tbody>
           <tr
-            v-for="(row, index) in currentGenreData"
+            v-for="(row, index) in currentQuizList"
             :key="currentGenre + index"
             :class="{ selected: currentGenreCursor == index }"
             @click="jumpCursor(index)">
@@ -35,14 +35,14 @@
 
     <h2>表示状態変更</h2>
     <label class="auto-display-control" v-show="currentQuizType !== 'image'">
-      <input type="checkbox" :checked="autoDisplay" @change="toggleAutoDisplayMode">
+      <input type="checkbox" :checked="enableAutoNext" @change="push('toggleAutoNextFlag')">
       スコア処理時に次の問題と答えを自動表示
     </label>
     <div class="view-state-control">
-      <base-button class="button" @click.native="hideAll">すべて隠す</base-button>
-      <base-button class="button" @click.native="showQuestion">問題文だけ表示</base-button>
-      <base-button v-if="currentQuizType === 'image'" class="button image-button" @click.native="toggleImageDisplay">画像を表示/隠す</base-button>
-      <base-button class="button" @click.native="showAll">問題文と答えを表示</base-button>
+      <base-button class="button" @click.native="push('hideAll')">すべて隠す</base-button>
+      <base-button class="button" @click.native="push('showOnlyQuestion')">問題文だけ表示</base-button>
+      <base-button v-if="currentQuizType === 'image'" class="button image-button" @click.native="push('toggleImageVisibility')">画像を表示/隠す</base-button>
+      <base-button class="button" @click.native="push('showAll')">問題文と答えを表示</base-button>
     </div>
 
     <h2>プレビュー</h2>
@@ -50,12 +50,12 @@
       <div class="sentence-preview">
         <div
           class="question"
-          :class="{ hidden: viewPhase === 'hidden'}">{{ currentQuestion.q }}</div>
+          :class="{ hidden: !isQuestionVisible}">{{ currentQuestion.q }}</div>
         <div
           class="answer"
-          :class="{ hidden: viewPhase !== 'showAll'}">A. {{ currentQuestion.a }}</div>
+          :class="{ hidden: !isAnswerVisible}">A. {{ currentQuestion.a }}</div>
       </div>
-      <div class="image-preview" :class="{ hidden: !imageDisplay }">
+      <div class="image-preview" :class="{ hidden: !isImageVisible || currentQuizType !== 'image' }">
         <img :src="src">
       </div>
     </div>
@@ -210,13 +210,14 @@
       },
       ...mapState({
         genres: state => state.quiz.genres,
-        viewPhase: state => state.quiz.viewPhase,
-        autoDisplay: state => state.quiz.autoDisplay,
+        enableAutoNext: state => state.quiz.enableAutoNext,
         questionNo: state => state.questionNo,
-        imageDisplay: state => state.quiz.imageDisplay,
+        isQuestionVisible: state => state.quiz.isQuestionVisible,
+        isAnswerVisible: state => state.quiz.isAnswerVisible,
+        isImageVisible: state => state.quiz.isImageVisible,
       }),
       ...mapGetters([
-        "currentGenreData",
+        "currentQuizList",
         "currentGenreCursor",
         "currentQuestion",
         "currentQuizType",
@@ -226,21 +227,6 @@
       jumpCursor(index) {
         this.push("jumpCursor", index)
       },
-      hideAll() {
-        this.push("changeViewPhase", "hidden")
-      },
-      showQuestion() {
-        this.push("changeViewPhase", "qOnly")
-      },
-      showAll() {
-        this.push("changeViewPhase", "showAll")
-      },
-      toggleAutoDisplayMode() {
-        this.push("toggleAutoDisplayMode")
-      },
-      toggleImageDisplay() {
-        this.push("toggleImageDisplay")
-      }
     }
   }
 </script>
