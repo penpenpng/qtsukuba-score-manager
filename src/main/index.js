@@ -59,10 +59,20 @@ function setApplicationMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate([
     {
       label: "表示",
-      submenu: [{
-        label: "得点表示ウィンドウ",
-        click: openViewWindow,
-      }],
+      submenu: [
+        {
+          label: "得点表示ウィンドウ",
+          click: openViewWindow,
+        },
+        {
+          label: "拡大",
+          role: "zoomin", 
+        },
+        {
+          label: "縮小",
+          role: "zoomout", 
+        }
+      ],
     },
     {
       label: "制御",
