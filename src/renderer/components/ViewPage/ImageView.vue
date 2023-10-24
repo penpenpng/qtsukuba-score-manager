@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style>
   .image-view {
     display: flex;
     justify-content: center;
@@ -12,13 +12,12 @@
     background: white;
     box-shadow: 0 0 2px 0px grey;
     padding: 10px;
-
-    img {
-      display: block;
-      height: 100%;
-      max-height: 100%;
-      max-width: 100%;
-    }
+  }
+  .image-view img {
+    display: block;
+    height: 100%;
+    max-height: 100%;
+    max-width: 100%;
   }
 </style>
 
@@ -27,7 +26,7 @@
     mapState,
     mapGetters,
   } from "vuex"
-  
+
   export default {
     computed: {
       src() {

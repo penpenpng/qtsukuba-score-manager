@@ -38,8 +38,32 @@
   </div>
 </template>
 
-<style scoped lang="scss">
-  @mixin checkbox {
+<style scoped>
+  .player-control {
+    background: ivory;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+  .player-control .mark-button {
+    background: lightgray;
+    margin: 5px;
+  }
+  .player-control .mark-button.marked {
+    background: gold;
+    color: black;
+  }
+  .player-control .actions {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+    margin-right: 10px;
+  }
+  .player-control .actions .slasher-radio {
+    display: none;
+  }
+  .player-control .actions .slasher-radio + label {
     cursor: pointer;
     display: inline-block;
     margin-left: 10px;
@@ -49,82 +73,46 @@
     background: lightgray;
     color: darkgray;
   }
-
-  .player-control {
-    background: ivory;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    .mark-button {
-      background: lightgray;
-      margin: 5px;
-
-      &.marked {
-        background: gold;
-        color: black;
-      }
-    }
-
-    .actions {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 10px;
-      margin-right: 10px;
-
-      .slasher-radio {
-        display: none;
-
-        & + label {
-          @include checkbox();
-
-          &:hover {
-            opacity: 0.7;
-          }
-        }
-
-        &:checked + label {
-          background: gold;
-          color: black;
-        }
-      }
-
-      .correct-check {
-        display: none;
-
-        & + label {
-          @include checkbox();
-
-          &:hover {
-            opacity: 0.7;
-          }
-        }
-
-        &:checked + label {
-          background: lightgreen;
-          color: black;
-        }
-      }
-    }
-
-    .input-name {
-      width: 100px;
-    }
-
-    .input-score {
-      width: 50px;
-    }
-
-    .float-right {
-      flex-grow: 2;
-    }
-
-    .delete-button {
-      float: right;
-      margin-right: 10px;
-      background: indianred;
-    }
+  .player-control .actions .slasher-radio + label:hover {
+    opacity: 0.7;
+  }
+  .player-control .actions .slasher-radio:checked + label {
+    background: gold;
+    color: black;
+  }
+  .player-control .actions .correct-check {
+    display: none;
+  }
+  .player-control .actions .correct-check + label {
+    cursor: pointer;
+    display: inline-block;
+    margin-left: 10px;
+    padding: 7px 10px;
+    box-shadow: 0px 0px 3px gray;
+    border-radius: 5px;
+    background: lightgray;
+    color: darkgray;
+  }
+  .player-control .actions .correct-check + label:hover {
+    opacity: 0.7;
+  }
+  .player-control .actions .correct-check:checked + label {
+    background: lightgreen;
+    color: black;
+  }
+  .player-control .input-name {
+    width: 100px;
+  }
+  .player-control .input-score {
+    width: 50px;
+  }
+  .player-control .float-right {
+    flex-grow: 2;
+  }
+  .player-control .delete-button {
+    float: right;
+    margin-right: 10px;
+    background: indianred;
   }
 </style>
 

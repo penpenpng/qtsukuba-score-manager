@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style>
   * {
     box-sizing: border-box;
   }

@@ -19,7 +19,7 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
   .append-button {
     margin: 10px;
     margin-top: 0;
@@ -27,18 +27,16 @@
 
   .actions {
     padding: 15px;
-
-    .button {
-      margin-left: 15px;
-    }
-    
-    .execute-button {
-      background: orange;
-    }
+  }
+  .actions .button {
+    margin-left: 15px;
+  }
+  .actions .execute-button {
+    background: orange;
   }
 </style>
 
-<style lang="scss">
+<style>
   .actions {
     background: #e4fcff;
   }

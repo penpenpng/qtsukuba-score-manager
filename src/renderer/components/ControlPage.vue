@@ -35,28 +35,29 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
   @keyframes blink-button {
-    0% {opacity: 0.5;}
-    100% {opacity: 1;}
+    0% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
   }
-
   .control-page {
     padding: 20px;
     margin: 0;
     width: 100%;
-
-    .show-button {
-      animation: blink-button ease-in-out 1s infinite alternate;
-      background: orangered;
-    }
-
-    .control-section {
-      padding: 15px;
-      box-shadow: 0 0 2px 0px grey;
-      border-radius: 5px;
-      margin: 5px;
-    }
+  }
+  .control-page .show-button {
+    animation: blink-button ease-in-out 1s infinite alternate;
+    background: orangered;
+  }
+  .control-page .control-section {
+    padding: 15px;
+    box-shadow: 0 0 2px 0px grey;
+    border-radius: 5px;
+    margin: 5px;
   }
 
   .columns-container {
@@ -66,23 +67,20 @@
   }
 </style>
 
-<style lang="scss">
-  .control-page {
-    h1 {
-      font-size: 1.5rem;
-      margin: 0;
-      margin-top: 10px;
-      padding: 10px;
-      font-weight: normal;
-    }
-
-    h2 {
-      font-size: 1.2rem;
-      padding: 10px;
-      padding-left: 20px;
-      margin: 0;
-      font-weight: bold;
-    }
+<style>
+  .control-page h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    margin-top: 10px;
+    padding: 10px;
+    font-weight: normal;
+  }
+  .control-page h2 {
+    font-size: 1.2rem;
+    padding: 10px;
+    padding-left: 20px;
+    margin: 0;
+    font-weight: bold;
   }
 </style>
 

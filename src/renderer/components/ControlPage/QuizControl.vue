@@ -2,10 +2,10 @@
   <section class="quiz-control">
     <h2>クイズ選択</h2>
     <label>
-      表示中のジャンル: 
+      表示中のジャンル:
       <select v-model="currentGenre">
         <option
-          v-for="genre in genres" 
+          v-for="genre in genres"
           :key="genre"
           :value="genre">{{ genre }}</option>
       </select>
@@ -63,7 +63,7 @@
   </section>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
   .quiz-table-wrapper {
     margin: 10px;
     margin-bottom: 15px;
@@ -77,48 +77,39 @@
     table-layout: fixed;
     box-shadow: 0 0 2px 0px gray;
     border-collapse: collapse;
-
-    thead tr {
-      background: aliceblue;
-
-      th {
-        border: 1px solid;
-        text-align: left;
-
-        &.no {
-          width: 5%;
-          min-width: 3em;
-        }
-
-        &.question {
-          width: 75%;
-        }
-
-        &.answer {
-          width: 20%;
-        }
-      }
-    }
-
-    tbody tr {
-      cursor: pointer;
-
-      td {
-        border: 1px solid;
-        overflow-x: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      &.selected, &:hover {
-        background: lightskyblue;
-        color: white;
-
-        &:hover:not(.selected) {
-          opacity: 0.5;
-        }
-      }
-    }
+  }
+  .quiz-table thead tr {
+    background: aliceblue;
+  }
+  .quiz-table thead tr th {
+    border: 1px solid;
+    text-align: left;
+  }
+  .quiz-table thead tr th.no {
+    width: 5%;
+    min-width: 3em;
+  }
+  .quiz-table thead tr th.question {
+    width: 75%;
+  }
+  .quiz-table thead tr th.answer {
+    width: 20%;
+  }
+  .quiz-table tbody tr {
+    cursor: pointer;
+  }
+  .quiz-table tbody tr td {
+    border: 1px solid;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .quiz-table tbody tr.selected, .quiz-table tbody tr:hover {
+    background: lightskyblue;
+    color: white;
+  }
+  .quiz-table tbody tr.selected:hover:not(.selected), .quiz-table tbody tr:hover:hover:not(.selected) {
+    opacity: 0.5;
   }
 
   .auto-display-control {
@@ -128,45 +119,40 @@
   .view-state-control {
     margin: 10px;
     margin-bottom: 15px;
-
-    .button:not(:first-child) {
-      margin-left: 15px;
-    }
-
-    .image-button {
-      background: orange;
-    }
+  }
+  .view-state-control .button:not(:first-child) {
+    margin-left: 15px;
+  }
+  .view-state-control .image-button {
+    background: orange;
   }
 
   .preview {
     display: grid;
     grid-template-rows: 1fr;
     grid-template-columns: 70% 30%;
-
-    .hidden {
-      background: gainsboro;
-    }
+  }
+  .preview .hidden {
+    background: gainsboro;
   }
 
   .sentence-preview {
     display: flex;
     flex-direction: column;
     box-shadow: 0 0 2px 0px gray;
-
-    .question {
-      height: 6em;
-      padding: 5px;
-      border-bottom: solid 0.5px darkgray;
-      overflow-wrap: break-word;
-      text-overflow: ellipsis;
-    }
-
-    .answer {
-      padding: 5px;
-      padding-right: 15px;
-      text-align: right;
-      text-overflow: ellipsis;
-    }
+  }
+  .sentence-preview .question {
+    height: 6em;
+    padding: 5px;
+    border-bottom: solid 0.5px darkgray;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
+  }
+  .sentence-preview .answer {
+    padding: 5px;
+    padding-right: 15px;
+    text-align: right;
+    text-overflow: ellipsis;
   }
 
   .image-preview {
@@ -176,12 +162,11 @@
     box-shadow: 0 0 2px 0px grey;
     margin-left: 5px;
     padding: 5px;
-
-    img {
-      display: block;
-      max-height: 100%;
-      max-width: 100%;
-    }
+  }
+  .image-preview img {
+    display: block;
+    max-height: 100%;
+    max-width: 100%;
   }
 </style>
 

@@ -2,7 +2,7 @@
   <div class="base-button"><slot></slot></div>
 </template>
 
-<style lang="scss">
+<style>
   .base-button {
     display: inline-block;
     background-image: linear-gradient(#6795fd 0%, #67ceff 100%);
@@ -14,14 +14,11 @@
     cursor: pointer;
     text-decoration: none;
     text-align: center;
-
-
-    &:hover {
-      opacity: 0.85;
-    }
-
-    &:active {
-      opacity: 0.7;
-    }
+  }
+  .base-button:hover {
+    opacity: 0.85;
+  }
+  .base-button:active {
+    opacity: 0.7;
   }
 </style>

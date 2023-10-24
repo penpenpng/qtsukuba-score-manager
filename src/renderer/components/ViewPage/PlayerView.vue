@@ -25,7 +25,7 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped>
   .player-view-wrapper {
     width: 150px;
     display: grid;
@@ -40,10 +40,9 @@
     text-align: center;
     color: transparent;
     justify-self: center;
-
-    &.ranked {
-      color: red;
-    }
+  }
+  .rank.ranked {
+    color: red;
   }
 
   .player-view {
@@ -56,37 +55,32 @@
     box-shadow: 0 0 2px 0 darkgrey;
     font-family: "M PLUS 1p", sans-serif;
     justify-self: center;
-
-    &.marked {
-      box-shadow: 0 0 3px 0 blue;
-    }
-
-    .no {
-      border-bottom: solid 1px;
-      text-align: center;
-      font-weight: 400;
-    }
-
-    .name {
-      writing-mode: vertical-rl;
-      text-align: center;
-      justify-self: center;
-      font-weight: 300;
-      font-size: 3rem;
-      padding: 10px;
-    }
-
-    .score-wrapper {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #fff1e6;
-
-      .score {
-        font-family: "Play", sans-serif;
-        font-size: 4rem;
-      }
-    }
+  }
+  .player-view.marked {
+    box-shadow: 0 0 3px 0 blue;
+  }
+  .player-view .no {
+    border-bottom: solid 1px;
+    text-align: center;
+    font-weight: 400;
+  }
+  .player-view .name {
+    writing-mode: vertical-rl;
+    text-align: center;
+    justify-self: center;
+    font-weight: 300;
+    font-size: 3rem;
+    padding: 10px;
+  }
+  .player-view .score-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff1e6;
+  }
+  .player-view .score-wrapper .score {
+    font-family: "Play", sans-serif;
+    font-size: 4rem;
   }
 </style>
 
@@ -109,7 +103,7 @@
         let rank = this.player.rank
         // if (rank == null)
         //   return "---"
-        
+
         // let suf = ""
         // if (rank == 11 || rank == 12 || rank == 13) {
         //   suf = "th"
@@ -122,7 +116,7 @@
         // }
 
         // return `${rank}${suf}`
-        
+
         if (rank != null && rank > 0) {
           return "Winner!"
         } else {
