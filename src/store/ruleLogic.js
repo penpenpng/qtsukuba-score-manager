@@ -53,7 +53,7 @@ export function resolveSlash(ruleKey, vuexState) {
     throw new Error(`Rule <${ruleKey}> is not found`)
 
   let stateRepr = convertToLogicArg(vuexState)
-  RuleHash[ruleKey].resolveSlash(stateRepr)
+  RuleHash[ruleKey].resolveSlash(stateRepr, vuexState.config[ruleKey])
   validate(stateRepr)
 
   // update vuexState
@@ -99,7 +99,8 @@ export function updateRank(ruleKey, vuexState) {
   for (let playerId of Object.keys(vuexState.players)) {
     let decision = RuleHash[ruleKey].makeDecision(
       convertToLogicArg(vuexState).players[playerId],
-      convertToLogicArg(vuexState)
+      convertToLogicArg(vuexState),
+      vuexState.config[ruleKey],
     )
     if (decision !== "win" && decision !== "lose" && decision !== "none")
       throw new Error("Invalid decision")
@@ -132,6 +133,16 @@ export function getRuleOptions() {
     })
   }
   return options
+}
+
+export function getDefaultConfig() {
+  let config = {}
+
+  for (let key of Object.keys(RuleHash)) {
+    config[key] = JSON.parse(JSON.stringify(RuleHash[key].config))
+  }
+
+  return config
 }
 
 function convertToLogicArg(vuexState) {
@@ -207,17 +218,33 @@ const SohosaiBoard = {
       },
     }
   },
+  config: {
+    pointSlashCorrect: 2,
+    pointBoardCorrect: 1,
+    pointVisualBoardCorrect: 1,
+    penaltySlashWrong: 1,
+    soloBonus: 1,
+  },
 
   makeDecision() {
     return "none"
   },
 
-  resolveSlash(state) {
+  resolveSlash(state, config) {
+    const bonus = (() => {
+      const correctPlayers = Object.values(state.players).filter(p => p.correct).length
+      if (correctPlayers === 1) {
+        return config.soloBonus
+      } else {
+        return 0
+      }
+    })()
+
     if (state.env.quizType == "image") {
       // ビジュアルボード
       for (let player of Object.values(state.players)) {
         if (player.correct) {
-          player.score.point.value += 1
+          player.score.point.value += config.pointVisualBoardCorrect + bonus
         }
       }
     } else {
@@ -226,15 +253,15 @@ const SohosaiBoard = {
         if (player.correct) {
           if (player.slash) {
             // 押して正解
-            player.score.point.value += 2
+            player.score.point.value += config.pointSlashCorrect + bonus
           } else {
             // 押さずに正解
-            player.score.point.value += 1
+            player.score.point.value += config.pointBoardCorrect + bonus
           }
         } else {
           if (player.slash) {
             // 押して誤答
-            player.score.point.value -= 1
+            player.score.point.value -= config.penaltySlashWrong
           }
         }
       }
@@ -255,10 +282,13 @@ const CyanaTennis = {
       },
     }
   },
+  config: {
+    goal: 8,
+  },
 
-  makeDecision(player, state) {
+  makeDecision(player, state, config) {
     let point = player.score.point.value 
-    if (point < 8) return "none"
+    if (point < config.goal) return "none"
     for (let p of Object.values(state.players)) {
       if (player.id != p.id && point - p.score.point.value < 2)
         return "none"
@@ -266,7 +296,8 @@ const CyanaTennis = {
     return "win"
   },
 
-  resolveSlash(state) {
+  // eslint-disable-next-line no-unused-vars
+  resolveSlash(state, _config) {
     if (state.slasher === null)
       return
     

@@ -2,6 +2,7 @@ import Vue from "vue"
 
 import {
   getRuleOptions,
+  getDefaultConfig,
   getScoreDefinitions,
   createInitialScore,
   removeWinner,
@@ -20,6 +21,9 @@ const state = {
     },
     ...getRuleOptions()
   ],
+  config: {
+    ...getDefaultConfig(),
+  },
   ruleKey: "",
   scoreDefinitions: [],
   questionNo: 0,
@@ -59,6 +63,9 @@ const mutations = {
   },
   toggleViewVisibility(state) {
     state.isViewVisible = !state.isViewVisible
+  },
+  updateConfig(state, { ruleKey, config }) {
+    state.config[ruleKey] = config
   },
 
   // Player Management

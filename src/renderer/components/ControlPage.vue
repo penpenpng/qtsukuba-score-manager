@@ -29,6 +29,9 @@
       <div>
         <h1>クイズ表示制御</h1>
         <quiz-control class="control-section"></quiz-control>
+
+        <h1>ルール制御</h1>
+        <rule-control class="control-section"></rule-control>
       </div>
     </div>
 
@@ -88,11 +91,13 @@
   import { mapState } from "vuex"
   import PlayersControl from "./ControlPage/PlayersControl.vue"
   import QuizControl from "./ControlPage/QuizControl.vue"
+  import RuleControl from './ControlPage/RuleControl.vue'
 
   export default {
     components: {
       PlayersControl,
       QuizControl,
+      RuleControl,
     },
     computed: {
       ruleKey: {
